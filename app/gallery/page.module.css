@@ -1,0 +1,254 @@
+.heroSection {
+  padding: 48px var(--gutter) 96px var(--gutter);
+  background-color: var(--color-stone);
+}
+
+.heroContainer {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.wingMask {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 75% 100%, 50% 85%, 25% 100%, 0% 80%);
+  background-color: var(--color-stone-dark);
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 21/9;
+  border-radius: var(--rounded-lg);
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.wingMask:hover .heroImage {
+  transform: scale(1.03);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(60, 42, 33, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.heroTitle {
+  font-size: 64px;
+  color: var(--color-stone);
+  font-style: italic;
+  margin-bottom: 16px;
+  max-width: 800px;
+  line-height: 1.2;
+}
+
+.heroTag {
+  color: var(--color-stone);
+  background-color: rgba(60, 42, 33, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 6px 16px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  border-radius: var(--rounded-sm);
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 32px;
+  }
+  .wingMask {
+    aspect-ratio: 16/9;
+  }
+}
+
+/* Scrapbook Grid (Masonry using CSS columns) */
+.gallerySection {
+  padding: 0 var(--gutter) 96px var(--gutter);
+}
+
+.scrapbookGrid {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  column-count: 1;
+  column-gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .scrapbookGrid {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .scrapbookGrid {
+    column-count: 3;
+  }
+}
+
+.scrapbookItem {
+  break-inside: avoid;
+  margin-bottom: 32px;
+  transition: all 0.4s ease;
+}
+
+.itemCard {
+  position: relative;
+  background-color: #ffffff;
+  padding: 12px;
+  border: 1px solid rgba(212, 196, 183, 0.3);
+  border-radius: var(--rounded-default);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.itemCard:hover {
+  border-color: var(--color-bronze);
+  box-shadow: 0 12px 24px rgba(60, 42, 33, 0.05);
+}
+
+.cardImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+}
+
+.cardMeta {
+  margin-top: 16px;
+  padding: 0 4px 4px 4px;
+}
+
+.cardLabel {
+  font-size: 12px;
+  color: rgba(60, 42, 33, 0.6);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Quote Cards */
+.quoteCard {
+  background-color: var(--color-stone-dark);
+  border: 1px solid rgba(212, 196, 183, 0.5);
+  padding: 48px;
+  border-radius: var(--rounded-default);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.quoteCardDark {
+  background-color: var(--color-espresso);
+  color: var(--color-stone);
+  border: none;
+}
+
+.quoteIcon {
+  font-size: 32px;
+  color: var(--color-bronze);
+  margin-bottom: 24px;
+}
+
+.quoteText {
+  font-size: 28px;
+  line-height: 1.4;
+  font-style: italic;
+  color: inherit;
+}
+
+.quoteAuthor {
+  margin-top: 24px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.verifiedBadge {
+  background-color: var(--color-espresso);
+  border: 1px solid var(--color-tan);
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  padding: 6px 12px;
+  border-radius: var(--rounded-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-2deg);
+  z-index: 10;
+  color: var(--color-tan);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  box-shadow: var(--shadow-luxurious-sm);
+}
+
+/* Propose Section */
+.proposeSection {
+  background-color: var(--color-stone-dark);
+  padding: 96px var(--gutter);
+  text-align: center;
+  border-top: 1px solid rgba(212, 196, 183, 0.4);
+}
+
+.proposeContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .ladder {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  .ladderItem:nth-child(2) {
+    transform: translateY(-16px);
+  }
+  .ladderItem:nth-child(3) {
+    transform: translateY(-32px);
+  }
+}
+
+.ladderItem {
+  background-color: #ffffff;
+  border: 1px solid rgba(212, 196, 183, 0.3);
+  width: 200px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-default);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.ladderIcon {
+  font-size: 40px;
+  color: var(--color-bronze);
+}
+
+.proposeTitle {
+  font-size: 32px;
+  margin-bottom: 24px;
+}

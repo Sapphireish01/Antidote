@@ -1,0 +1,130 @@
+.header {
+  position: sticky;
+  top: 0;
+  height: 80px;
+  width: 100%;
+  background-color: rgba(252, 249, 244, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(212, 196, 183, 0.35);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s ease;
+}
+
+.logoLink:hover {
+  opacity: 0.85;
+}
+
+.logoImage {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+.rightContainer {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.desktopMenu {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  color: var(--color-espresso);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, color 0.2s ease;
+}
+
+.iconBtn:hover {
+  color: var(--color-bronze);
+}
+
+.iconBtn:active {
+  transform: scale(0.95);
+}
+
+.mobileToggle {
+  display: none;
+}
+
+.link {
+  color: var(--color-espresso);
+  padding: 6px 14px;
+  border-radius: var(--rounded-md);
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+}
+
+.link:hover {
+  color: var(--color-bronze);
+  opacity: 1;
+}
+
+.activeLink {
+  background: linear-gradient(135deg, #FFFDF6, #F5EFE0) padding-box,
+              linear-gradient(135deg, #EADFCA, #C9A876) border-box;
+  border: 1px solid transparent;
+  color: var(--color-bronze) !important;
+  box-shadow: 0 4px 12px rgba(201, 168, 118, 0.12), 0 1px 3px rgba(139, 106, 69, 0.05);
+}
+
+/* Responsive styles */
+@media (max-width: 991px) {
+  .rightContainer {
+    gap: 20px;
+  }
+  .desktopMenu {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktopMenu {
+    display: none;
+  }
+  .mobileToggle {
+    display: flex;
+  }
+  .logoImage {
+    height: 28px;
+  }
+}

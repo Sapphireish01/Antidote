@@ -1,0 +1,258 @@
+.introSection {
+  background: var(--gradient-stone);
+  padding: clamp(80px, 10vw, 140px) 0 48px 0;
+}
+
+.introContainer {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+.introSubtitle {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--color-bronze);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 24px;
+}
+
+.introTitle {
+  font-size: clamp(40px, 5vw, 64px);
+  color: var(--color-espresso);
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.introLead {
+  max-width: 680px;
+  margin: 0 auto;
+  color: rgba(58, 46, 38, 0.8);
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.6;
+}
+
+/* Tabs */
+.tabSection {
+  padding-bottom: clamp(64px, 8vw, 120px);
+  background-color: var(--color-stone);
+}
+
+.tabsWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(58, 46, 38, 0.1);
+  padding-bottom: 24px;
+}
+
+.tabBtn {
+  background: transparent;
+  border: 1px solid rgba(58, 46, 38, 0.15);
+  color: rgba(58, 46, 38, 0.6);
+  padding: 12px 24px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 44px;
+}
+
+.tabBtn:hover {
+  color: var(--color-espresso);
+  border-color: rgba(58, 46, 38, 0.4);
+}
+
+.tabBtnActive {
+  background-color: var(--color-espresso);
+  color: var(--color-stone);
+  border-color: var(--color-espresso);
+  box-shadow: var(--shadow-luxurious-sm);
+}
+
+/* SEO Keyword Strip */
+.seoKeywordsContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: -24px;
+  margin-bottom: 48px;
+}
+
+.seoKeywordTag {
+  font-size: 11px;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  color: rgba(58, 46, 38, 0.4);
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(58, 46, 38, 0.05);
+  padding: 4px 10px;
+  border-radius: var(--rounded-full);
+}
+
+/* Events Grid */
+.eventsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+@media (min-width: 992px) {
+  .eventsGrid {
+    grid-template-columns: 1fr; /* Stack vertically by default but with larger layouts */
+  }
+}
+
+.eventCard {
+  background-color: var(--color-stone-light);
+  border: 1px solid rgba(212, 196, 183, 0.4);
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-luxurious-sm);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eventCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-luxurious-md);
+  border-color: rgba(139, 106, 69, 0.25);
+}
+
+@media (min-width: 768px) {
+  .eventCard {
+    flex-direction: row;
+    align-items: stretch;
+    height: 320px;
+  }
+  .cardImageWrapper {
+    width: 40%;
+    flex-shrink: 0;
+  }
+  .cardDetails {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+.cardImageWrapper {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 768px) {
+  .cardImageWrapper {
+    aspect-ratio: auto;
+  }
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.eventCard:hover .cardImage {
+  transform: scale(1.03);
+}
+
+.cardDetails {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardDate {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-bronze);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cardCity {
+  font-size: 28px;
+  color: var(--color-espresso);
+}
+
+.cardVenue {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: rgba(58, 46, 38, 0.6);
+  font-weight: 500;
+  margin-top: -4px;
+}
+
+.cardDesc {
+  color: rgba(58, 46, 38, 0.75);
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(58, 46, 38, 0.08);
+  padding-top: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cardPrice {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Past link Section */
+.pastLinkSection {
+  padding: clamp(64px, 8vw, 100px) 0;
+  background-color: var(--color-stone-light);
+  border-top: 1px solid rgba(58, 46, 38, 0.05);
+}
+
+.pastLinkCard {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  border: 1px solid rgba(139, 106, 69, 0.2);
+  background-color: var(--color-stone);
+  padding: 48px;
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-luxurious-sm);
+}
+
+.pastLinkTitle {
+  font-size: 28px;
+  color: var(--color-espresso);
+  margin-bottom: 12px;
+}

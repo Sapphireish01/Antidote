@@ -1,0 +1,456 @@
+.heroSection {
+  background-color: var(--color-espresso);
+  color: var(--color-stone);
+  padding: 96px var(--gutter) 120px var(--gutter);
+  text-align: center;
+}
+
+.heroContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.heroTag {
+  color: rgba(245, 242, 237, 0.7);
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.heroTitle {
+  font-size: 64px;
+  line-height: 1.1;
+  color: var(--color-stone);
+}
+
+.heroDesc {
+  color: rgba(245, 242, 237, 0.8);
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 18px;
+}
+
+.maskWrapper {
+  margin-top: -48px;
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--gutter);
+}
+
+.standardImageWrapper {
+  width: 100%;
+  max-width: 1024px;
+  height: 400px;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-stone-dark);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-luxurious-md);
+  border: 1px solid rgba(212, 196, 183, 0.4);
+}
+
+.wingMask {
+  display: none; /* Removed to avoid bleed */
+}
+
+.maskImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.05);
+  transition: transform 1s ease;
+}
+
+.wingMask:hover .maskImage {
+  transform: scale(1.01);
+}
+
+/* Progress tracker */
+.progressSection {
+  padding: 80px var(--gutter);
+}
+
+.progressContainer {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.progressLabel {
+  font-size: 12px;
+  color: var(--color-bronze);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.initiativeTitle {
+  font-size: 32px;
+  font-family: var(--font-serif);
+}
+
+.progressPercent {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.progressBar {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(130, 117, 106, 0.2);
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--color-bronze);
+}
+
+.progressMarker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-bronze);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progressDesc {
+  margin-top: 32px;
+  color: rgba(60, 42, 33, 0.7);
+  max-width: 560px;
+}
+
+/* Tier ladder */
+.ladderSection {
+  background-color: var(--color-stone-dark);
+  padding: 96px var(--gutter) 144px var(--gutter);
+  position: relative;
+  overflow: hidden;
+}
+
+.ladderLine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top right, transparent 48%, var(--color-bronze) 50%, transparent 52%);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.ladderContainer {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.ladderHeader {
+  margin-bottom: 64px;
+}
+
+.ladderHeader h3 {
+  color: var(--color-bronze);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.ladderHeaderLine {
+  width: 96px;
+  height: 1px;
+  background-color: var(--color-bronze);
+}
+
+.ladderGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .ladderGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.ladderCard {
+  background-color: var(--color-stone);
+  border: 1px solid rgba(60, 42, 33, 0.1);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  transition: transform 0.4s ease, border-color 0.4s ease;
+  border-radius: var(--rounded-md);
+}
+
+.ladderCard:hover {
+  border-color: rgba(166, 124, 82, 0.4);
+  transform: translateY(-8px) !important;
+}
+
+.ladderCardDark {
+  background-color: var(--color-espresso);
+  color: var(--color-stone);
+  border-color: var(--color-espresso);
+}
+
+.ladderCardDark:hover {
+  border-color: var(--color-bronze);
+}
+
+/* Stagger heights on desktop */
+@media (min-width: 768px) {
+  .cardTier1 {
+    transform: translateY(48px);
+  }
+  .cardTier2 {
+    transform: translateY(32px);
+  }
+  .cardTier3 {
+    transform: translateY(16px);
+  }
+  .cardTier4 {
+    transform: translateY(0);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.cardLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(60, 42, 33, 0.6);
+}
+
+.ladderCardDark .cardLabel {
+  color: var(--color-bronze);
+}
+
+.levelBadge {
+  background-color: var(--color-stone-dark);
+  border: 1px solid rgba(139, 106, 69, 0.3);
+  width: auto;
+  height: auto;
+  padding: 6px 12px;
+  border-radius: var(--rounded-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-espresso);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.ladderCardDark .levelBadge {
+  background-color: rgba(201, 168, 118, 0.15);
+  color: var(--color-tan);
+  border-color: rgba(201, 168, 118, 0.3);
+}
+
+.largeBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.cardTitle {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.cardDesc {
+  font-size: 15px;
+  color: rgba(60, 42, 33, 0.7);
+  flex-grow: 1;
+}
+
+.ladderCardDark .cardDesc {
+  color: rgba(245, 242, 237, 0.7);
+}
+
+.cardAction {
+  margin-top: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-bronze);
+  padding-bottom: 4px;
+  width: fit-content;
+  color: var(--color-espresso);
+  transition: color 0.2s ease;
+}
+
+.ladderCardDark .cardAction {
+  color: var(--color-bronze);
+  border-bottom-color: var(--color-bronze);
+}
+
+.cardAction:hover {
+  color: var(--color-bronze);
+}
+
+.ladderCardDark .cardAction:hover {
+  color: #ffffff;
+}
+
+/* Stewardship section */
+.stewardshipSection {
+  padding: 96px var(--gutter);
+}
+
+.stewardshipGrid {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .stewardshipGrid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+.stewardshipTitle {
+  font-size: 32px;
+  margin-bottom: 48px;
+}
+
+.promises {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.promiseItem {
+  display: flex;
+  gap: 16px;
+}
+
+.promiseIcon {
+  color: var(--color-bronze);
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.promiseTitleText {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.promiseDesc {
+  color: rgba(60, 42, 33, 0.7);
+}
+
+.stewardshipImageArea {
+  position: relative;
+  background-color: rgba(130, 117, 106, 0.1);
+  padding: 4px;
+  border-radius: var(--rounded-md);
+}
+
+.stewardshipImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: grayscale(0.2);
+  border-radius: var(--rounded-default);
+}
+
+.stewardshipLabel {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background-color: var(--color-espresso);
+  color: var(--color-tan);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 6px 12px;
+  border-radius: var(--rounded-sm);
+  border: 1px solid rgba(201, 168, 118, 0.2);
+  z-index: 10;
+}
+
+/* CTA Sanctuary Section */
+.ctaSanctuary {
+  background-color: var(--color-stone-dark);
+  padding: 96px var(--gutter);
+  text-align: center;
+}
+
+.ctaContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.ctaDivider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ctaLine {
+  width: 48px;
+  height: 1px;
+  background-color: var(--color-bronze);
+}
+
+.ctaDividerIcon {
+  color: var(--color-bronze);
+}
+
+.ctaTitle {
+  font-size: 32px;
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+
+.ctaDesc {
+  color: rgba(60, 42, 33, 0.7);
+  font-size: 18px;
+  max-width: 500px;
+}
+
+.ctaButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .ctaButtons {
+    flex-direction: row;
+    width: auto;
+  }
+}

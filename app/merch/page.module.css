@@ -1,0 +1,338 @@
+.heroSection {
+  padding: 48px var(--gutter) 96px var(--gutter);
+  background-color: var(--color-stone);
+}
+
+.heroContainer {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+
+@media (min-width: 768px) {
+  .heroContainer {
+    flex-direction: row;
+    padding-top: 48px;
+  }
+  .heroText {
+    width: 50%;
+  }
+  .heroImageArea {
+    width: 50%;
+  }
+}
+
+.heroLabel {
+  color: var(--color-bronze);
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.heroTitle {
+  font-size: 64px;
+  margin-bottom: 24px;
+  color: var(--color-espresso);
+}
+
+.heroDescription {
+  color: rgba(60, 42, 33, 0.75);
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.heroImageArea {
+  position: relative;
+  width: 100%;
+}
+
+.wingMask {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+  background-color: var(--color-stone-dark);
+  overflow: hidden;
+  aspect-ratio: 4/5;
+  border-radius: var(--rounded-lg);
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.heroImageArea:hover .heroImage {
+  transform: scale(1.03);
+}
+
+.waxSeal {
+  background: radial-gradient(circle at 30% 30%, var(--color-bronze), var(--color-espresso));
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.2), 
+              inset -2px -2px 5px rgba(0, 0, 0, 0.4),
+              var(--shadow-luxurious-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 47% 53% 50% 50% / 45% 45% 55% 55%;
+  transform: rotate(-3deg);
+  width: 96px;
+  height: 96px;
+  position: absolute;
+  bottom: -16px;
+  right: -16px;
+  z-index: 20;
+  color: var(--color-stone);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 8px;
+}
+
+@media (max-width: 480px) {
+  .waxSeal {
+    width: 80px;
+    height: 80px;
+    bottom: -8px;
+    right: -8px;
+  }
+}
+
+.heroImageArea:hover .waxSeal {
+  transform: rotate(2deg) scale(1.05);
+  box-shadow: var(--shadow-luxurious-lg), var(--glow-bronze);
+}
+
+.sealLabel {
+  font-size: clamp(9px, 1.2vw, 11px);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-stone-light);
+  font-weight: 500;
+  display: block;
+}
+
+.sealPrice {
+  font-size: clamp(16px, 2vw, 22px);
+  font-family: var(--font-serif);
+  margin-top: 2px;
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Product list section */
+.productsSection {
+  background-color: var(--color-stone-dark);
+  padding: 80px 0 120px 0;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 64px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 64px 24px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.productCard {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.4s ease;
+}
+
+.productImageArea {
+  position: relative;
+  aspect-ratio: 3/4;
+  background-color: rgba(60, 42, 33, 0.05);
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid rgba(60, 42, 33, 0.05);
+  border-radius: var(--rounded-md);
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.productCard:hover .productImage {
+  transform: scale(1.04);
+}
+
+.smallSeal {
+  width: 64px;
+  height: 64px;
+  font-size: 12px;
+  font-weight: 600;
+  bottom: -8px;
+  right: -8px;
+  padding: 4px;
+}
+
+.smallSeal .sealPrice {
+  font-size: 15px;
+  margin-top: 0;
+}
+
+/* staggered offsets */
+@media (min-width: 768px) {
+  .tier1 {
+    transform: translateY(0);
+  }
+  .tier2 {
+    transform: translateY(-16px);
+  }
+  .tier3 {
+    transform: translateY(-32px);
+  }
+}
+
+.productCardTitle {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.productCardMeta {
+  color: var(--color-bronze);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+/* Coming soon */
+.comingSoonSection {
+  padding: 96px var(--gutter) 120px var(--gutter);
+  background-color: var(--color-stone);
+}
+
+.comingSoonHeader {
+  margin-bottom: 64px;
+}
+
+.comingSoonGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .comingSoonGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.soonCard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: rgba(232, 228, 222, 0.4);
+  padding: 32px;
+  border-radius: var(--rounded-md);
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .soonCard {
+    flex-direction: row;
+  }
+}
+
+.soonImageWrapper {
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  background-color: var(--color-stone-dark);
+  flex-shrink: 0;
+  border-radius: var(--rounded-default);
+}
+
+.soonImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.8);
+  opacity: 0.8;
+}
+
+.soonContent {
+  flex: 1;
+}
+
+.soonTitle {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.soonDesc {
+  color: rgba(60, 42, 33, 0.7);
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* Newsletter Section */
+.newsletterSection {
+  background-color: var(--color-espresso);
+  color: var(--color-stone);
+  padding: 96px var(--gutter);
+  text-align: center;
+}
+
+.newsletterContent {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.newsletterIcon {
+  font-size: 36px;
+  margin-bottom: 24px;
+  color: var(--color-bronze);
+}
+
+.newsletterTitle {
+  font-size: 32px;
+  margin-bottom: 16px;
+  font-family: var(--font-serif);
+}
+
+.newsletterText {
+  color: rgba(245, 242, 237, 0.7);
+  margin-bottom: 40px;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .form {
+    flex-direction: row;
+  }
+}

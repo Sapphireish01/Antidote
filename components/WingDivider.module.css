@@ -1,0 +1,23 @@
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  margin: 64px auto;
+  max-width: var(--container-max);
+}
+
+.line {
+  height: 1px;
+  flex: 1;
+  background-color: rgba(130, 117, 106, 0.2); /* outline color with opacity */
+}
+
+.wing {
+  color: var(--color-bronze);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

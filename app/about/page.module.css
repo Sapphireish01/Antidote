@@ -1,0 +1,174 @@
+.heroSection {
+  background: var(--gradient-stone);
+  padding: clamp(80px, 10vw, 160px) 0;
+  border-bottom: 1px solid rgba(58, 46, 38, 0.05);
+}
+
+.heroContainer {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+.heroSubtitle {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--color-bronze);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 24px;
+}
+
+.heroTitle {
+  font-size: clamp(48px, 6vw, 80px);
+  color: var(--color-espresso);
+  line-height: 1.1;
+  margin-bottom: 32px;
+}
+
+.heroLead {
+  max-width: 720px;
+  margin: 0 auto;
+  color: rgba(58, 46, 38, 0.85);
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.6;
+}
+
+/* Philosophy Section */
+.philosophySection {
+  padding: clamp(64px, 8vw, 120px) 0;
+  background-color: var(--color-stone);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+
+.pillarsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .pillarsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.pillarCard {
+  background-color: var(--color-stone-light);
+  border: 1px solid rgba(58, 46, 38, 0.08);
+  padding: 48px 32px;
+  border-radius: var(--rounded-lg);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-luxurious-sm);
+}
+
+.pillarCard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-luxurious-md);
+  border-color: rgba(139, 106, 69, 0.3);
+}
+
+.pillarTitle {
+  font-size: 24px;
+  color: var(--color-espresso);
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(139, 106, 69, 0.15);
+  padding-bottom: 12px;
+}
+
+/* Story Section */
+.storySection {
+  padding: clamp(64px, 8vw, 120px) 0;
+  background-color: var(--color-stone-light);
+  border-top: 1px solid rgba(58, 46, 38, 0.05);
+  border-bottom: 1px solid rgba(58, 46, 38, 0.05);
+}
+
+.storyLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .storyLayout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .storyText {
+    flex: 1.2;
+    padding-right: 64px;
+  }
+  .storyImageWrapper {
+    flex: 0.8;
+  }
+}
+
+.storyText {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.storyTitle {
+  font-size: clamp(36px, 4vw, 56px);
+  color: var(--color-espresso);
+  margin-bottom: 16px;
+}
+
+.storyImageWrapper {
+  width: 100%;
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-luxurious-md);
+  aspect-ratio: 4 / 5;
+}
+
+.storyImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.storyImageWrapper:hover .storyImage {
+  transform: scale(1.05);
+}
+
+/* Call to Action */
+.ctaSection {
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--gradient-luxurious);
+  text-align: center;
+}
+
+.ctaTitle {
+  font-size: clamp(32px, 4vw, 48px);
+  color: var(--color-espresso);
+  margin-bottom: 16px;
+}
+
+.ctaButtons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .ctaButtons {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 var(--margin-mobile);
+  }
+}
