@@ -21,7 +21,7 @@ export default function Header() {
       <nav className={styles.nav}>
         {/* Left: Logo */}
         <Link href="/" className={styles.logoLink}>
-          <img src="/ANTIDOTE-logo.png" alt="Antidote Movement" className={styles.logoImage} />
+          <img src="/ANTIDOTE-mainlogo.svg" alt="Antidote Movement" className={styles.logoImage} />
         </Link>
 
         {/* Right Section containing Desktop Menu & Action Buttons */}
@@ -48,14 +48,14 @@ export default function Header() {
           </div>
 
           <div className={styles.actions}>
-            <Link 
-              href="/checkout/tickets" 
-              className="btn btn-primary" 
-              style={{ 
-                padding: '10px 24px', 
-                fontSize: '12px', 
+            <Link
+              href="/checkout/tickets"
+              className="btn btn-primary"
+              style={{
+                padding: '10px 24px',
+                fontSize: '12px',
                 whiteSpace: 'nowrap',
-                borderRadius: '50px' 
+                borderRadius: '50px'
               }}
             >
               Tickets

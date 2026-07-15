@@ -1,7 +1,7 @@
 .header {
   position: sticky;
   top: 0;
-  height: 80px;
+  height: 70px;
   width: 100%;
   background-color: rgba(252, 249, 244, 0.92);
   backdrop-filter: blur(12px);
@@ -37,7 +37,7 @@
 }
 
 .logoImage {
-  height: 32px;
+  height: 120px;
   width: auto;
   display: block;
 }
@@ -101,7 +101,7 @@
 
 .activeLink {
   background: linear-gradient(135deg, #FFFDF6, #F5EFE0) padding-box,
-              linear-gradient(135deg, #EADFCA, #C9A876) border-box;
+    linear-gradient(135deg, #EADFCA, #C9A876) border-box;
   border: 1px solid transparent;
   color: var(--color-bronze) !important;
   box-shadow: 0 4px 12px rgba(201, 168, 118, 0.12), 0 1px 3px rgba(139, 106, 69, 0.05);
@@ -112,6 +112,7 @@
   .rightContainer {
     gap: 20px;
   }
+
   .desktopMenu {
     gap: 16px;
   }
@@ -121,9 +122,11 @@
   .desktopMenu {
     display: none;
   }
+
   .mobileToggle {
     display: flex;
   }
+
   .logoImage {
     height: 28px;
   }
