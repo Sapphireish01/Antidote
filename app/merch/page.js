@@ -40,7 +40,7 @@ export default async function MerchPage() {
 
   // Find the featured product (hoodie)
   const featuredProduct = products.find((p) => p.id === "hoodie") || products[0];
-  const gridProducts = products.filter((p) => p.id !== "hoodie");
+  const preorderProducts = products.filter((p) => p.id !== "hoodie");
 
   return (
     <>
@@ -81,7 +81,7 @@ export default async function MerchPage() {
                 <Link href={`/merch/${featuredProduct.id}`}>
                   <img
                     className={styles.heroImage}
-                    src={featuredProduct.image}
+                    src='/merch/homepage-1.webp'
                     alt="Ritual Hoodie"
                   />
                 </Link>
@@ -111,12 +111,29 @@ export default async function MerchPage() {
             </div>
 
             <div className={styles.grid}>
-              {gridProducts.map((product, idx) => (
+              {preorderProducts.map((product, idx) => (
                 <div key={product.id} className={`${styles.productCard} ${styles[`tier${idx + 1}`]}`}>
-                  <div className={styles.productImageArea}>
-                    <Link href={`/merch/${product.id}`}>
-                      <img className={styles.productImage} src={product.image} alt={product.name} />
-                    </Link>
+                  <div className={`${styles.productImageArea} ${product.hoverImage ? styles.flippable : ''}`}>
+                    {product.hoverImage ? (
+                      <div className={styles.flipContainer}>
+                        <div className={styles.flipInner}>
+                          <div className={styles.flipFront}>
+                            <Link href={`/merch/${product.id}`}>
+                              <img className={styles.productImage} src={product.image} alt={product.name} />
+                            </Link>
+                          </div>
+                          <div className={styles.flipBack}>
+                            <Link href={`/merch/${product.id}`}>
+                              <img className={styles.productImage} src={product.hoverImage} alt={`${product.name} Alternate`} />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <Link href={`/merch/${product.id}`}>
+                        <img className={styles.productImage} src={product.image} alt={product.name} />
+                      </Link>
+                    )}
                     <div className={`${styles.waxSeal} ${styles.smallSeal}`}>
                       <span className={styles.sealPrice} style={{ fontSize: "16px" }}>
                         {product.currencySymbol}
@@ -144,57 +161,6 @@ export default async function MerchPage() {
           </div>
         </section>
 
-        <WingDivider />
-
-        {/* Section: Coming Soon */}
-        <section className={styles.comingSoonSection}>
-          <div className="container">
-            <div className={styles.comingSoonHeader}>
-              <h2 className="text-headline-lg font-editorial">Coming Soon</h2>
-              <p className="text-body-md" style={{ color: "rgba(60, 42, 33, 0.65)" }}>
-                Archives in the making. Register for early access.
-              </p>
-            </div>
-
-            <div className={styles.comingSoonGrid}>
-              {/* Product 4 */}
-              <div className={styles.soonCard}>
-                <div className={styles.soonImageWrapper}>
-                  <img
-                    className={styles.soonImage}
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA5-8fBiLkwmAzkAf005j1Zg6F0Zjx-WT6HGeB6wqmvboU7PTEYmpeXE1TlRcoc7da3MjEj8CCn8HlgTlOJN5hIF7tO0NXemrfMP9qvqbvc3s98yrt-ahUIHsEbh35lAYhQfsnYcm3AkjLaoLkI-0FBWAXX6K_7BinURO3wtNJ4jU5-keHc6dgbmzIrp0iIIZfS_Lj7LRPAwyFa72AK6E0ebMFvh2TU2zy4suB9k8WbfJuEl_U7UI"
-                    alt="The Void Burner"
-                  />
-                </div>
-                <div className={styles.soonContent}>
-                  <h3 className={`${styles.soonTitle} font-editorial`}>The Void Burner</h3>
-                  <p className={styles.soonDesc}>
-                    A sculptural piece for sensory atmosphere. Solid bronze construction.
-                  </p>
-                  <button className="btn btn-ghost">Notify Me</button>
-                </div>
-              </div>
-
-              {/* Product 5 */}
-              <div className={styles.soonCard}>
-                <div className={styles.soonImageWrapper}>
-                  <img
-                    className={styles.soonImage}
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-4b0OLflu6kJpMwPpbtalw7aWxRmWOounz_FmmX7q22tjpomVQUiOjPe7haxSDnuasvW5XqkTuTmm1bF-bSasL27FLHo02L4pjcFrV2PaiEYE2j07kg_F8i3Rpsd5UMSmCKsR2fNwvJIW4RfTHHf0xDeM64hdaodEzIYil56LboWUQz-pZNNxw2h7PgOr_hJx4WihukAgDmBppdkNXQA01NqHqijdToxVm6SHYp6YyUmktXZppx8"
-                    alt="The Daily Codex"
-                  />
-                </div>
-                <div className={styles.soonContent}>
-                  <h3 className={`${styles.soonTitle} font-editorial`}>The Daily Codex</h3>
-                  <p className={styles.soonDesc}>
-                    400 pages of heavyweight paper for unhurried reflection.
-                  </p>
-                  <button className="btn btn-ghost">Notify Me</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Newsletter */}
         <section className={styles.newsletterSection}>
@@ -211,6 +177,19 @@ export default async function MerchPage() {
       </main>
 
       <Footer />
+
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            document.addEventListener('touchstart', function(e) {
+              var flippable = e.target.closest('.${styles.flippable}');
+              if (flippable) {
+                flippable.classList.toggle('${styles.touched}');
+              }
+            }, { passive: true });
+          `
+        }}
+      />
     </>
   );
 }

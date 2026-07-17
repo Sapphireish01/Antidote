@@ -38,7 +38,7 @@ export default function Home() {
           <div
             className={styles.heroBg}
             style={{
-              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuBH_Isp3haBSCkjYem1T65fBDNtlGdyYEMX9f4f_kW5YRTlXu9lPr0G0TUfJGZpOlQX2K1yZdETtIAGHwApJYNHsphogaqv2uvMzkbtmTGG8GdHWqkde6FZgqoz621A_3DcBNUaFkpjqps6c0KJ8RUKGuMchmUkiIztDnROhwPZlF1bsyYRmJypW4tDKS_H3UJnOdUCSF4qPe2niH5AKNx9PRN0_RVuOS9OgRWs1kS3BdKBUhsKFFI')`
+              backgroundImage: `url('/hero/landing-page-hero.webp')`
             }}
           />
           <div className={`${styles.heroContent} animate-fade-in-up`}>
@@ -52,7 +52,7 @@ export default function Home() {
               <Link href="/merch" className="btn btn-secondary">
                 Preorder Merch
               </Link>
-              <Link href="/partnership" className="btn btn-ghost">
+              <Link href="/partnership" className="btn btn-ghost" style={{ color: '#F5F2ED' }}>
                 Partner With Us
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
               </Link>
@@ -80,75 +80,93 @@ export default function Home() {
             </div>
 
             <div className={styles.carousel}>
-              {/* London Card */}
+              {/* Berlin Card */}
               <div className={styles.eventCard}>
                 <div className={styles.cardStamp}></div>
                 <div className={styles.imageWrapper}>
                   <img
                     className={styles.cardImage}
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF2d2B5UCOLNEhTVMjZFF-nNCsSq1yGX1JOYu5zt8LytBHuOAUHTWK3mGhnpct8FD_NTzhCCG-_1dq5U4d6hFIu6SUdS5XXZOJgjzOfcP9mphsHwnQK16W7BCZGVLarIHxZz3pXX4UwjW27YAhRyVwYBhX0QET7PcZWARJLbbK6Ld5mEXYzxgdbejh7wnh7N7IBXcsKPmBYleOpmREsXrKq-jCa-rhh4rj6dS5DM-aKH6GRRnYLfc"
-                    alt="London Event"
+                    src="/events/image.webp"
+                    alt="Berlin Event"
                   />
                 </div>
                 <div className={styles.cardDetails}>
                   <div className={styles.cardMeta}>
                     <div>
-                      <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>London</h3>
-                      <p className="text-label-lg" style={{ color: 'var(--color-bronze)' }}>October 12, 2024</p>
+                      <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Berlin, BE</h3>
+                      <p className="text-label-lg" style={{ color: 'var(--color-bronze)', marginBottom: '4px' }}>Sat Oct. 3 • 4:00 PM</p>
+                      {/* <p className="text-body-xs" style={{ color: 'rgba(60, 42, 33, 0.6)', marginBottom: '8px' }}>Saturday, October 3 • 4:00 PM - 9:30 PM</p> */}
+                      <p className="text-label-md" style={{ color: 'var(--color-espresso)', fontWeight: '600' }}>From €13.96</p>
                     </div>
-                    <span className={styles.cardLocation}>The Tabernacle</span>
+                    <span className={styles.cardLocation} style={{ textAlign: 'right' }}>Church at the South Star</span>
                   </div>
-                  <Link href="/checkout/tickets" className="btn btn-primary" style={{ width: '100%' }}>
+                  <Link
+                    href="https://www.eventbrite.com/e/judah-festival-berlin-tickets-1990714984106?aff=ebemoffollowpublishemail&ref=eemail&utm_campaign=following_published_event&utm_content=follow_notification&utm_medium=email&utm_source=eventbrite"
+                    className="btn btn-primary"
+                    style={{ width: '100%' }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Get Tickets
                   </Link>
                 </div>
               </div>
 
               {/* Manchester Card */}
-              <div className={styles.eventCard}>
+              <div className={`${styles.eventCard} ${styles.eventCardComingSoon}`}>
                 <div className={styles.cardStamp}></div>
-                <div className={styles.imageWrapper}>
-                  <img
-                    className={styles.cardImage}
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpK69PE2V7bbSu7QVkCmkDu8DDeG8fvhPRf_h4QBg74EHeMctskhHPRTxa1MJGS9plQlslWPNszRT7iQxap1-0zuZ1yWHM_pLsqeu9VhnKwplTqdIn2VRr20eCVpM32s4wLHMJSMn13YAyubGmhhbjrfbfFM2PUFQtY0KBMnJmyvqCmP-Tt6xf7yrZB9bJTKTYbZ__vtYcN8jpPmCoujdSVkPzDuudcXHJ018xqIVfkEbbW2bo6PE"
-                    alt="Manchester Event"
-                  />
-                </div>
-                <div className={styles.cardDetails}>
-                  <div className={styles.cardMeta}>
-                    <div>
-                      <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Manchester</h3>
-                      <p className="text-label-lg" style={{ color: 'var(--color-bronze)' }}>October 19, 2024</p>
-                    </div>
-                    <span className={styles.cardLocation}>Victoria Warehouse</span>
+                <div className={styles.blurredContent}>
+                  <div className={styles.imageWrapper}>
+                    <img
+                      className={styles.cardImage}
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpK69PE2V7bbSu7QVkCmkDu8DDeG8fvhPRf_h4QBg74EHeMctskhHPRTxa1MJGS9plQlslWPNszRT7iQxap1-0zuZ1yWHM_pLsqeu9VhnKwplTqdIn2VRr20eCVpM32s4wLHMJSMn13YAyubGmhhbjrfbfFM2PUFQtY0KBMnJmyvqCmP-Tt6xf7yrZB9bJTKTYbZ__vtYcN8jpPmCoujdSVkPzDuudcXHJ018xqIVfkEbbW2bo6PE"
+                      alt="Manchester Event"
+                    />
                   </div>
-                  <Link href="/checkout/tickets" className="btn btn-primary" style={{ width: '100%' }}>
-                    Get Tickets
-                  </Link>
+                  <div className={styles.cardDetails}>
+                    <div className={styles.cardMeta}>
+                      <div>
+                        <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Manchester</h3>
+                        <p className="text-label-lg" style={{ color: 'var(--color-bronze)' }}>October 19, 2024</p>
+                      </div>
+                      <span className={styles.cardLocation}>Victoria Warehouse</span>
+                    </div>
+                    <button className="btn btn-primary" style={{ width: '100%' }} disabled>
+                      Coming Soon
+                    </button>
+                  </div>
+                </div>
+                <div className={styles.comingSoonOverlay}>
+                  <span className={styles.comingSoonBadge}>Coming Soon</span>
                 </div>
               </div>
 
               {/* Birmingham Card */}
-              <div className={styles.eventCard}>
+              <div className={`${styles.eventCard} ${styles.eventCardComingSoon}`}>
                 <div className={styles.cardStamp}></div>
-                <div className={styles.imageWrapper}>
-                  <img
-                    className={styles.cardImage}
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt3orYUCkay-f92yVr2Y7YUESADJ8STHkas8S-X3oHFIDtJ1UFCNO8jqxERbrIt0MxjeEjV11fFf2qpG0ViyN-iDvzp8u_ffZtXE9xbTyF164c9XmT1QKia9xG3xTjTp5eugeWdX7Y6-qorb3Un0uVOkF8MNQMEZLn6MyfL_v62qAD3yFxTf_zMMjmXftAIrglmOvA00az2OJxdk4X9TnTuRaunadsAeMIvb8hZT0eqw_STeBoAxY"
-                    alt="Birmingham Event"
-                  />
-                </div>
-                <div className={styles.cardDetails}>
-                  <div className={styles.cardMeta}>
-                    <div>
-                      <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Birmingham</h3>
-                      <p className="text-label-lg" style={{ color: 'var(--color-bronze)' }}>October 26, 2024</p>
-                    </div>
-                    <span className={styles.cardLocation}>The Custard Factory</span>
+                <div className={styles.blurredContent}>
+                  <div className={styles.imageWrapper}>
+                    <img
+                      className={styles.cardImage}
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt3orYUCkay-f92yVr2Y7YUESADJ8STHkas8S-X3oHFIDtJ1UFCNO8jqxERbrIt0MxjeEjV11fFf2qpG0ViyN-iDvzp8u_ffZtXE9xbTyF164c9XmT1QKia9xG3xTjTp5eugeWdX7Y6-qorb3Un0uVOkF8MNQMEZLn6MyfL_v62qAD3yFxTf_zMMjmXftAIrglmOvA00az2OJxdk4X9TnTuRaunadsAeMIvb8hZT0eqw_STeBoAxY"
+                      alt="Birmingham Event"
+                    />
                   </div>
-                  <Link href="/checkout/tickets" className="btn btn-primary" style={{ width: '100%' }}>
-                    Get Tickets
-                  </Link>
+                  <div className={styles.cardDetails}>
+                    <div className={styles.cardMeta}>
+                      <div>
+                        <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Birmingham</h3>
+                        <p className="text-label-lg" style={{ color: 'var(--color-bronze)' }}>October 26, 2024</p>
+                      </div>
+                      <span className={styles.cardLocation}>The Custard Factory</span>
+                    </div>
+                    <button className="btn btn-primary" style={{ width: '100%' }} disabled>
+                      Coming Soon
+                    </button>
+                  </div>
+                </div>
+                <div className={styles.comingSoonOverlay}>
+                  <span className={styles.comingSoonBadge}>Coming Soon</span>
                 </div>
               </div>
             </div>
@@ -163,12 +181,12 @@ export default function Home() {
             <div className={styles.merchGrid}>
               <div className={styles.merchContent}>
                 <span className="text-label-md">New Drop</span>
-                <h2 className="font-editorial">The Tribe Hoodie</h2>
+                <h2 className="font-editorial">The Antidote Drop</h2>
                 <p className="text-body-lg">
-                  A garment crafted for the journey. Heavily weighted organic cotton, featuring the Antidote signature wing embroidery. Designed for comfort during the craft and reverence during the rest.
+                  Garments crafted for the journey. Made with heavily weighted organic cotton, this piece features the signature Antidote wing embroidery. It’s designed for comfort during the craft and reverence during the rest.
                 </p>
                 <div style={{ marginBottom: '32px' }}>
-                  <p className="text-label-lg">Preorder the New Drop - Ships Oct 24</p>
+                  <p className="text-label-lg">Preorder the New Drop - Ships Oct 14th</p>
                 </div>
                 <div>
                   <Link href="/merch" className="btn btn-primary">
@@ -177,14 +195,35 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className={styles.merchImageArea}>
-                <div className={styles.merchStamp}></div>
-                <div className={styles.merchImageWrapper}>
-                  <img
-                    className={styles.merchImage}
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCABrc5r7Uiilof0PcbCatvU_3Xzgz1D8waOIJX3yb6FkDR0o23WKnumR0ml6PMamr0bjQFcEgurfNW3zIHXamnb_lBQjys6rgKWq4-YiMzrh69JHnG5uYjhx8yFBxmg2YzkqSGNoWRYeYuWc3sfTNxV1GVRrGb-aT_33LFeDuYFyhvp91W38JArEtp9bDu12dQ_RST3ZMwEUbnrnuAQx4GSyH9g6xA5zIKlRT2w1e0YZI52c9mLWw"
-                    alt="The Tribe Hoodie"
-                  />
+              <div className={styles.merchCollageArea}>
+                <div className={styles.collageContainer}>
+                  <div className={`${styles.collageItem} ${styles.collageItem1}`}>
+                    <img src="/merch/homepage-1.webp" alt="Collage Item 1" />
+                  </div>
+                  <div className={`${styles.collageItem} ${styles.collageItem2}`}>
+                    <img src="/merch/homepage-2.webp" alt="Collage Item 2" />
+                  </div>
+                  <div className={`${styles.collageItem} ${styles.collageItem3}`}>
+                    <img src="/merch/homepage-3.webp" alt="Collage Item 3" />
+                  </div>
+                  <div className={`${styles.collageItem} ${styles.collageItem4}`}>
+                    <img src="/merch/homepage-4.webp" alt="Collage Item 4" />
+                  </div>
+                  <div className={`${styles.collageItem} ${styles.collageItem5}`}>
+                    <img src="/merch/homepage-5.webp" alt="Collage Item 5" />
+                  </div>
+                  <div className={`${styles.collageItem} ${styles.collageItem6}`}>
+                    <img src="/merch/homepage-6.webp" alt="Collage Item 6" />
+                  </div>
+                  <div className={`${styles.collageItem} ${styles.collageItem7}`}>
+                    <img src="/merch/homepage-7.webp" alt="Collage Item 7" />
+                  </div>
+                  <div className={`${styles.collageItem} ${styles.collageItem8}`}>
+                    <img src="/merch/homepage-8.webp" alt="Collage Item 8" />
+                  </div>
+                  <div className={styles.waxSeal}>
+                    <span>New Drop</span>
+                  </div>
                 </div>
               </div>
             </div>
