@@ -1,91 +1,143 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { getAllEvents } from "@/lib/data";
-import EventsList from "./EventsList";
+import { getAllPastEvents } from "@/lib/data";
 import styles from "./page.module.css";
 
 const SITE_URL = "https://antidotemovement.global";
 
 export const metadata = {
-  title: "Upcoming Gatherings & Creative Festivals — Antidote Movement",
+  title: "Gatherings & Creative Archives — Antidote Movement",
   description:
-    "Join upcoming Antidote Movement gatherings and creative Christian festivals in London, Manchester, Birmingham, Lagos, Nairobi, and New York. Secure tickets.",
+    "Explore Antidote Movement gatherings, tours, and nights of worship featuring Travis Greene, Dr Prinz, Smith, Young & Chosen, and the Antidote Tribe.",
   alternates: {
     canonical: `${SITE_URL}/events`,
   },
 };
 
 export default async function EventsPage() {
-  const events = await getAllEvents();
+  const events = await getAllPastEvents();
 
-  // Generate dynamic Schema.org Event objects for SEO crawler indexation
-  const schemaMarkup = events.map((e) => ({
+  const breadcrumbList = {
     "@context": "https://schema.org",
-    "@type": "Event",
-    "name": `Antidote Gathering — ${e.city}`,
-    "description": e.description,
-    "startDate": `${e.date}T19:00:00`,
-    "eventAttendanceMode": "https://schema.org/PhysicalEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "location": {
-      "@type": "Place",
-      "name": e.venue,
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": e.address,
-        "addressLocality": e.city,
-        "addressCountry": e.countryCode,
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
       },
-    },
-    "image": e.image,
-    "offers": {
-      "@type": "Offer",
-      "price": e.price.toString(),
-      "priceCurrency": e.currency,
-      "url": `${SITE_URL}/checkout/tickets?city=${e.id}`,
-      "availability": "https://schema.org/InStock",
-      "validFrom": "2024-01-01",
-    },
-  }));
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Gatherings & Archives",
+        item: `${SITE_URL}/events`,
+      },
+    ],
+  };
 
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(schemaMarkup).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(breadcrumbList).replace(/</g, "\\u003c"),
         }}
       />
 
       <Header />
 
       <main className="w-full">
-        {/* Intro */}
-        <section className={styles.introSection}>
-          <div className={styles.introContainer}>
-            <span className={styles.introSubtitle}>PHYSICAL COVENANT</span>
-            <h1 className={`${styles.introTitle} font-editorial`}>The Assemblies</h1>
-            <p className={styles.introLead}>
-              We do not build for screens alone. We convene in historic halls and industrial sanctuaries to slow down, break bread, and share the fruits of our craft.
+        {/* Hero Section */}
+        <section className={styles.heroSection}>
+          <div className={styles.heroContainer}>
+            <span className={styles.heroSubtitle}>HISTORICAL LEDGER & CHRONICLES</span>
+            <h1 className={`${styles.heroTitle} font-editorial`}>Gatherings & Archives</h1>
+            <p className={styles.heroLead}>
+              Moments captured across our chapters, concerts, and worship assemblies — glorifying Yahweh through the performing arts.
             </p>
+            <div className={styles.quickNav}>
+              <Link href="/gallery" className="btn btn-secondary" style={{ fontSize: "13px", padding: "10px 20px" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>photo_library</span>
+                Explore Full Photo Gallery
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* Tab List Section (Client Component) */}
-        <EventsList initialEvents={events} />
-
-        {/* View Past Gatherings Link */}
-        <section className={styles.pastLinkSection}>
+        {/* Gatherings Grid */}
+        <section className={styles.archiveSection}>
           <div className="container">
-            <div className={styles.pastLinkCard}>
-              <h3 className={`${styles.pastLinkTitle} font-editorial`}>Looking for the Archives?</h3>
-              <p className="text-body-md">Reflect on the stories, snapshots, and community impact of our previous chapters.</p>
-              <div style={{ marginTop: '24px' }}>
-                <Link href="/events/past" className="btn btn-secondary" style={{ minHeight: '44px' }}>
-                  View Past Chapters
-                </Link>
-              </div>
+            <div className={styles.archiveList}>
+              {events.map((item) => (
+                <article key={item.id} className={styles.archiveCard}>
+                  <div className={styles.cardImageWrapper}>
+                    <img
+                      className={styles.cardImage}
+                      src={item.image}
+                      alt={item.title}
+                      loading="lazy"
+                    />
+                    <div className={styles.imageOverlayBadge}>
+                      <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>photo_camera</span>
+                      <span>{item.images?.length || 0} Photos</span>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardHeader}>
+                      <div className={styles.tagGroup}>
+                        <span className={styles.chapterTag}>{item.chapter}</span>
+                        {item.artist && <span className={styles.artistTag}>{item.artist}</span>}
+                      </div>
+                    </div>
+
+                    <h2 className={`${styles.cardTitle} font-editorial`}>
+                      <Link href={`/events/${item.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                        {item.title}
+                      </Link>
+                    </h2>
+
+                    {/* Thumbnail Strip */}
+                    {item.images && item.images.length > 0 && (
+                      <div className={styles.thumbStrip}>
+                        {item.images.slice(0, 5).map((thumb, idx) => (
+                          <div key={idx} className={styles.thumbItem}>
+                            <img src={thumb} alt={`Thumbnail ${idx + 1}`} loading="lazy" />
+                          </div>
+                        ))}
+                        {item.images.length > 5 && (
+                          <div className={styles.thumbMore}>
+                            +{item.images.length - 5}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className={styles.cardActions}>
+                      <Link href={`/events/${item.id}`} className="btn btn-primary" style={{ display: "inline-flex", padding: "10px 20px", fontSize: "13px" }}>
+                        View Photo Gallery ({item.images?.length || 0})
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className={styles.backCta}>
+          <div className="container">
+            <h2 className={`${styles.ctaTitle} font-editorial`}>The Journey Continues</h2>
+            <div style={{ marginTop: "28px", display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+              <Link href="/gallery" className="btn btn-primary" style={{ minHeight: "44px" }}>
+                Browse Full Gallery
+              </Link>
+              <Link href="/partnership" className="btn btn-secondary" style={{ minHeight: "44px" }}>
+                Partner With Us
+              </Link>
             </div>
           </div>
         </section>

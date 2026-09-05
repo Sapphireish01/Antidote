@@ -1,185 +1,265 @@
+"use client";
+
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { PAST_EVENTS, getAllGalleryImages } from "@/lib/data";
 import styles from "./page.module.css";
 
 export default function GalleryPage() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://antidotemovement.com"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Gallery",
-        "item": "https://antidotemovement.com/gallery"
+  const allImages = useMemo(() => getAllGalleryImages(), []);
+  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [activeModalIndex, setActiveModalIndex] = useState(null);
+
+  // Filter images based on selected event/artist
+  const filteredImages = useMemo(() => {
+    if (selectedFilter === "all") return allImages;
+    return allImages.filter((item) => item.eventId === selectedFilter);
+  }, [allImages, selectedFilter]);
+
+  const activeImage = activeModalIndex !== null ? filteredImages[activeModalIndex] : null;
+
+  // Keyboard navigation for Lightbox
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (activeModalIndex === null) return;
+      if (e.key === "Escape") {
+        setActiveModalIndex(null);
+      } else if (e.key === "ArrowRight") {
+        setActiveModalIndex((prev) => (prev + 1) % filteredImages.length);
+      } else if (e.key === "ArrowLeft") {
+        setActiveModalIndex((prev) => (prev - 1 + filteredImages.length) % filteredImages.length);
       }
-    ]
-  };
+    },
+    [activeModalIndex, filteredImages.length]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Lock body scroll when modal is active
+  useEffect(() => {
+    if (activeModalIndex !== null) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeModalIndex]);
+
+  const filterTabs = [
+    { id: "all", label: "All Archives", count: allImages.length },
+    { id: "travis-greene-berlin", label: "Travis Greene", count: 10 },
+    { id: "dr-prinz-worship", label: "Dr Prinz", count: 10 },
+    { id: "smith-worship", label: "Smith", count: 10 },
+    { id: "young-chosen", label: "Young & Chosen", count: 6 },
+    { id: "night-of-worship", label: "Night of Worship", count: 10 },
+    { id: "antidote-vertical", label: "Vertical Sessions", count: 10 },
+  ];
 
   return (
     <>
-      <head>
-        <title>Collective Resonance Gallery — Antidote Movement</title>
-        <meta 
-          name="description" 
-          content="Browse the living archive of Antidote Movement gathering photos, creative artifacts, and spiritual seeker gatherings." 
-        />
-        <link rel="canonical" href="https://antidotemovement.com/gallery" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
       <Header />
+
       <main className="w-full">
-        {/* Wing-Mask Hero Section */}
+        {/* Hero Section */}
         <section className={styles.heroSection}>
           <div className={styles.heroContainer}>
             <div className={styles.wingMask}>
-              <img 
-                className={styles.heroImage} 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCsN0NFX8ibMPA2vc9aQFq4FLItASNReQvS7xwRWJNK1xR8bJV_sVadXU9eoplxOo3epPtGiLgk0Anpsn4ddEiONFbwKxy2ODCNczvx1u462W5ZARhFOab8VRAzEFb8Bptonptc9S0rmuy0xBqZtNhByn-jDd1tzCsvRHRgBbBMFFfFlyYRz1V6XgaAPa5KWJ0g0WRSWN0fVkBY48JFbIQBbG-1F6YGdawJqihUUwamyJUyeBVnbY" 
-                alt="Community Gathering" 
+              <img
+                className={styles.heroImage}
+                src="/Pastevents/Travis Greene Concert/TRAVIS GREENE MADE A WAY TOUR BERLIN.jpg"
+                alt="Antidote Moments Archive"
               />
               <div className={styles.overlay}>
+                <span className={styles.heroSubtitle}>LIVING ARCHIVE & VISUAL CHRONICLES</span>
                 <h1 className={`${styles.heroTitle} font-editorial`}>
-                  A living archive of collective resonance.
+                  A Sanctuary of Light, Sound & Sacred Encounter
                 </h1>
-                <span className={styles.heroTag}>Chapter IV: The Wall</span>
+                <p className={styles.heroLead}>
+                  Moments captured across tours, concert stages, and intimate worship assemblies — glorifying Yahweh through the creative arts.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Scrapbook Grid Section */}
+        {/* Filter Navigation Bar */}
+        <section className={styles.filterSection}>
+          <div className="container">
+            <div className={styles.filterScroll}>
+              {filterTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setSelectedFilter(tab.id);
+                    setActiveModalIndex(null);
+                  }}
+                  className={`${styles.filterButton} ${
+                    selectedFilter === tab.id ? styles.filterButtonActive : ""
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  <span className={styles.tabCount}>{tab.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Gallery Grid */}
         <section className={styles.gallerySection}>
-          <div className={styles.scrapbookGrid}>
-            {/* Item 1: Hands holding ceramics */}
-            <div className={styles.scrapbookItem} style={{ transform: "rotate(-1deg)" }}>
-              <div className={styles.itemCard}>
-                <img 
-                  className={styles.cardImage} 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA51DFjsHdr987gUl_czB4ogqRPcBHvtRFNvX07dNZUAuOFNmeBRAJhQpfd-_0nGMGhV6A4aXesELguQtB0SsT_gC9cUBpS-c0_vX6KrNIGRC8STrvyCDV7uPdX1IlcYXA74UfiAp9RBPMGZ91LFpPKFrrWDAJNJjDr7ab6-0QwlJGJSSrA34eJZM8TfRP4KA6MDzitSoj-Zvzl9Km0Ld11lwP01f_M_hgogyWm3zOuuhhrxVV2CI" 
-                  alt="Ceramic vessels" 
-                />
-                <div className={styles.cardMeta}>
-                  <p className={styles.cardLabel}>London, Sept 2023</p>
-                </div>
+          <div className="container">
+            <div className={styles.galleryMetaRow}>
+              <div className={styles.metaCount}>
+                Showing <strong>{filteredImages.length}</strong> archived photos
               </div>
             </div>
 
-            {/* Item 2: Quote Card (The Stone Card) */}
-            <div className={styles.scrapbookItem} style={{ transform: "rotate(1.5deg)" }}>
-              <div className={styles.quoteCard}>
-                <span className={`material-symbols-outlined ${styles.quoteIcon}`}>format_quote</span>
-                <p className={`${styles.quoteText} font-editorial`}>
-                  "In the silence of the room, we found a language that didn't require words. It was the antidote to the noise outside."
-                </p>
-                <p className={styles.quoteAuthor}>— Julian V.</p>
-              </div>
-            </div>
-
-            {/* Item 3: Journal with Wax Seal */}
-            <div className={styles.scrapbookItem} style={{ transform: "rotate(-0.5deg)" }}>
-              <div className={styles.itemCard}>
-                <div className={styles.verifiedBadge}>
-                  <span>VERIFIED</span>
+            <div className={styles.photoGrid}>
+              {filteredImages.map((img, index) => (
+                <div
+                  key={img.id}
+                  className={styles.photoCard}
+                  onClick={() => setActiveModalIndex(index)}
+                >
+                  <div className={styles.imageWrapper}>
+                    <img
+                      src={img.src}
+                      alt={`${img.artist} - ${img.eventTitle}`}
+                      loading="lazy"
+                      className={styles.photoImg}
+                    />
+                    <div className={styles.photoOverlay}>
+                      <span className={styles.overlayArtist}>{img.artist}</span>
+                      <h3 className={styles.overlayTitle}>{img.eventTitle}</h3>
+                      <span className={styles.zoomPrompt}>
+                        <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>
+                          zoom_in
+                        </span>
+                        Click to view
+                      </span>
+                    </div>
+                  </div>
+                  <div className={styles.cardCaption}>
+                    <span className={styles.cardArtistTag}>{img.artist}</span>
+                    <span className={styles.cardChapterTag}>{img.chapter}</span>
+                  </div>
                 </div>
-                <img 
-                  className={styles.cardImage} 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCko1LxFZBjvJ00MQQpwX4cHEoO_986zZqNIm5YyFLfLaICd9gULFTmg8hXjV2MKDz1u6_yTP7waiKh7w_995noNHVRcTkWwrsWUpP4udSOk76HqQ6R5FyDm9Yr0tQb8gRsijUFjGRTEaZDEM88dNL4fLAoeXril5XyM6zWa3f9r0_UnOmr-kQL4kVVslg-CqWzvHpwvPaw13xlQx0l5-WCaIDfy2Q0JsDubuDknmuaSBKHn8V94qc" 
-                  alt="Journal Editorial" 
-                />
-                <div className={styles.cardMeta}>
-                  <p className={styles.cardLabel}>Archived Identity 0012</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Item 4: Arched doorway */}
-            <div className={styles.scrapbookItem} style={{ transform: "rotate(2deg)" }}>
-              <div className={styles.itemCard}>
-                <img 
-                  className={styles.cardImage} 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyQIMFiHXFKO7cNXW0fUQaG0omMLUxD4jxAVKfBEMzUsXzHiEIiNerMOjhXq7rRzAs6mJXqbAuiUGYOyrITythY79svBw4LCmDw97BzFEEkCQZMYKAlR43wuvBETmuImSPmksOE3lsMzw9soYDNSGNaZ93PGSmPqrm5L9Io49DiVZJ97IyFr2calXKQ9JuexGpR_JltY-14X8xgQR8nDKuL3mUOmel5SAJBsGTZpqU5WiGEkyyRHo" 
-                  alt="Arched architecture" 
-                />
-                <div className={styles.cardMeta}>
-                  <p className={styles.cardLabel}>Sanctuary, Tokyo</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Item 5: Artists circle */}
-            <div className={styles.scrapbookItem} style={{ transform: "rotate(-1.8deg)" }}>
-              <div className={styles.itemCard}>
-                <img 
-                  className={styles.cardImage} 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo89Gl6jGE4TMRLV5gk8Cg36ZwxgQnpYfpjXbfY_3aTrmwRSyFeenOHv9thG5ibHYQ372DAvRlXPk4Zjwdy8TAPzK-mYHEBA7YjS6I-rP_8qD1OIAbqmIi_5V-WCVq7qFs2baK5rc3DUI-_kjitXFP6wvJWuMQPF0qmgcrDGq-VgZiVeQ1baPIx1QicN_HVMKprxOzllRya2gufa3w-gW6PFy7TSSecG2YpeWMkb-eH-vHD09hZJo" 
-                  alt="Artists Circle" 
-                />
-                <div className={styles.cardMeta}>
-                  <p className={styles.cardLabel}>Tribe Session, London</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Item 6: Quote Card 2 (Dark background) */}
-            <div className={styles.scrapbookItem} style={{ transform: "rotate(0.8deg)" }}>
-              <div className={`${styles.quoteCard} ${styles.quoteCardDark}`}>
-                <span className={`material-symbols-outlined ${styles.quoteIcon}`} style={{ color: "var(--color-bronze)" }}>psychology</span>
-                <p className={`${styles.quoteText} font-editorial`}>
-                  "The wall is not a barrier; it's a mirror of who we become when we stop rushing."
-                </p>
-                <p className={styles.quoteAuthor}>— Elena M.</p>
-              </div>
-            </div>
-
-            {/* Item 7: Long table twilight */}
-            <div className={styles.scrapbookItem} style={{ transform: "rotate(-1deg)" }}>
-              <div className={styles.itemCard}>
-                <img 
-                  className={styles.cardImage} 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC6Dp31dMIIKCQShdHxf5QVj4MiLu-MLccZwbGJVBRRDSg9MM47TZZdYgT2A6emd6nevZ2xh05hC7kD-r-X-c33YcKuG-2M2mcXTNg9mWyMTt7LCzYhJ2gqbZeOrD4ai_JMnMrI-1uwnUIdW2sIHvfbwY3h_15VMlqDqj88O3qMJHOftCNqmQwOmsIichAj3Qx9OPplMROVXnKcPA3orFtzBOSoV0yE9H1L9UHSEDzX8RTjI9I2Aw" 
-                  alt="Communal Long Table" 
-                />
-                <div className={styles.cardMeta}>
-                  <p className={styles.cardLabel}>Joshua Tree, 2024</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Propose a movement */}
+        {/* Lightbox Modal */}
+        {activeImage && (
+          <div className={styles.modalOverlay} onClick={() => setActiveModalIndex(null)}>
+            <div
+              className={styles.modalContent}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                className={styles.closeBtn}
+                onClick={() => setActiveModalIndex(null)}
+                aria-label="Close photo viewer"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+
+              {/* Prev Button */}
+              <button
+                className={`${styles.navBtn} ${styles.prevBtn}`}
+                onClick={() =>
+                  setActiveModalIndex(
+                    (activeModalIndex - 1 + filteredImages.length) % filteredImages.length
+                  )
+                }
+                aria-label="Previous image"
+              >
+                <span className="material-symbols-outlined">chevron_left</span>
+              </button>
+
+              {/* Image Preview */}
+              <div className={styles.modalImageContainer}>
+                <img
+                  src={activeImage.src}
+                  alt={`${activeImage.artist} - ${activeImage.eventTitle}`}
+                  className={styles.modalImage}
+                />
+              </div>
+
+              {/* Next Button */}
+              <button
+                className={`${styles.navBtn} ${styles.nextBtn}`}
+                onClick={() =>
+                  setActiveModalIndex((activeModalIndex + 1) % filteredImages.length)
+                }
+                aria-label="Next image"
+              >
+                <span className="material-symbols-outlined">chevron_right</span>
+              </button>
+
+              {/* Modal Footer Info */}
+              <div className={styles.modalFooter}>
+                <div className={styles.modalInfo}>
+                  <div className={styles.modalHeaderTag}>
+                    <span className={styles.chapterBadge}>{activeImage.chapter}</span>
+                    <span className={styles.counterText}>
+                      {activeModalIndex + 1} / {filteredImages.length}
+                    </span>
+                  </div>
+                  <h2 className={`${styles.modalTitle} font-editorial`}>
+                    {activeImage.eventTitle}
+                  </h2>
+                  <p className={styles.modalDetails}>
+                    <strong>{activeImage.artist}</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Propose a movement section */}
         <section className={styles.proposeSection}>
           <div className={styles.proposeContainer}>
             <div className={styles.ladder}>
               <div className={styles.ladderItem}>
-                <span className={`material-symbols-outlined ${styles.ladderIcon}`}>location_on</span>
+                <span className={`material-symbols-outlined ${styles.ladderIcon}`}>
+                  location_on
+                </span>
               </div>
               <div className={styles.ladderItem}>
-                <span className={`material-symbols-outlined ${styles.ladderIcon}`}>diversity_3</span>
+                <span className={`material-symbols-outlined ${styles.ladderIcon}`}>
+                  diversity_3
+                </span>
               </div>
               <div className={styles.ladderItem}>
-                <span className={`material-symbols-outlined ${styles.ladderIcon}`}>auto_awesome</span>
+                <span className={`material-symbols-outlined ${styles.ladderIcon}`}>
+                  auto_awesome
+                </span>
               </div>
             </div>
-            
-            <h2 className={`${styles.proposeTitle} font-editorial`}>This could be your city next.</h2>
-            <Link href="/partnership" className="text-label-lg" style={{ color: "var(--color-espresso)", borderBottom: "2px solid var(--color-bronze)", paddingBottom: "4px" }}>
-              Propose a movement in your region
+
+            <h2 className={`${styles.proposeTitle} font-editorial`}>
+              Connect with Antidote
+            </h2>
+            <p className={styles.proposeLead}>
+              We are connecting Christian creatives, artists, and worshipers worldwide. Partner with us to host a gathering or creative tour.
+            </p>
+            <Link href="/partnership" className="btn btn-primary" style={{ marginTop: "24px" }}>
+              Partner With Us
             </Link>
           </div>
         </section>
       </main>
+
       <Footer />
     </>
   );

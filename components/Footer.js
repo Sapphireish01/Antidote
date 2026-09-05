@@ -9,8 +9,8 @@ export default function Footer() {
       <div className={styles.container}>
         {/* Row 1A: Primary Transactional CTAs */}
         <div className={styles.ctaRow}>
-          <Link href="/checkout/tickets" className="btn btn-primary">
-            Get Tickets
+          <Link href="/events" className="btn btn-primary">
+            Explore Events
           </Link>
           <Link href="/merch" className="btn btn-secondary">
             Preorder Merch
@@ -46,7 +46,7 @@ export default function Footer() {
               <img src="/ANTIDOTE-logo.png" alt="Antidote Movement" className={styles.logoImage} />
             </Link>
             <div className={styles.copyright}>
-              © 2024 Antidote Movement. Crafted for the soul.
+              © 2024 Antidote Movement. The cure the world needs.
             </div>
           </div>
 
@@ -55,7 +55,6 @@ export default function Footer() {
             <Link href="/" className={styles.link}>Home</Link>
             <Link href="/about" className={styles.link}>About</Link>
             <Link href="/events" className={styles.link}>Events</Link>
-            <Link href="/events/past" className={styles.link}>Past</Link>
             <Link href="/gallery" className={styles.link}>Gallery</Link>
             <Link href="/merch" className={styles.link}>Merch</Link>
             <Link href="/partnership" className={styles.link}>Partner</Link>
@@ -63,8 +62,6 @@ export default function Footer() {
 
           {/* Right Column: Social Links */}
           <div className={styles.socialsColumn}>
-            {/* ig link, facebook link, tiktok link */}
-            {/* the shade of the icns should be a light shade */}
             <a
               href="https://instagram.com/antidote.movement"
               className={styles.socialLink}

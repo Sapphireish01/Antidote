@@ -49,7 +49,7 @@ export default function Header() {
 
           <div className={styles.actions}>
             <Link
-              href="/checkout/tickets"
+              href="/partnership"
               className="btn btn-primary"
               style={{
                 padding: '10px 24px',
@@ -58,7 +58,7 @@ export default function Header() {
                 borderRadius: '50px'
               }}
             >
-              Tickets
+              Partner
             </Link>
             <button className={styles.iconBtn} aria-label="Shopping Bag">
               <span className="material-symbols-outlined">shopping_bag</span>
@@ -101,10 +101,7 @@ export default function Header() {
             About
           </Link>
           <Link href="/events" className={`${styles.link} ${isEventsActive ? styles.activeLink : ""}`} onClick={() => setMobileMenuOpen(false)}>
-            Upcoming Events
-          </Link>
-          <Link href="/events/past" className={`${styles.link} ${pathname === "/events/past" ? styles.activeLink : ""}`} onClick={() => setMobileMenuOpen(false)}>
-            Past Events
+            Events
           </Link>
           <Link href="/gallery" className={`${styles.link} ${isGalleryActive ? styles.activeLink : ""}`} onClick={() => setMobileMenuOpen(false)}>
             Gallery
@@ -115,8 +112,8 @@ export default function Header() {
           <Link href="/partnership" className={`${styles.link} ${isPartnerActive ? styles.activeLink : ""}`} onClick={() => setMobileMenuOpen(false)}>
             Partner
           </Link>
-          <Link href="/checkout/tickets" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)} style={{ width: '80%', padding: '12px 24px' }}>
-            Get Tickets
+          <Link href="/partnership" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)} style={{ width: '80%', padding: '12px 24px' }}>
+            Partner With Us
           </Link>
         </div>
       )}

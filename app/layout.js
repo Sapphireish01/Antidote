@@ -23,21 +23,22 @@ const SITE_URL = "https://antidotemovement.global";
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Antidote Movement — Global Christian Creative Gatherings & Editorial Apparel",
+    default: "Antidote Movement — The Cure The World Needs | Christian Creative Gatherings & Arts",
     template: "%s — Antidote Movement",
   },
   description:
-    "A global spiritual-editorial movement of creative and spiritual seekers, rooted in Europe and expanding worldwide. Join our gatherings, preorder our heavyweight organic garments, and partner to glorify Yahweh.",
+    "Antidote Movement — The cure the world needs. Spreading the love of God and the consciousness of His light in a dark world through creative arts. Creating spaces and platforms where Christian creatives glorify Yahweh.",
   keywords: [
     // Core brand keywords — kept broad/global at root level
     "Antidote Movement",
-    "Antidote creative gatherings",
-    "global Christian creative community",
+    "The cure the world needs",
     "Christian creative movement",
-    // Gatherings & Community — region-neutral here; put city-specific
-    // terms (e.g. "Christian creative events Lagos", "...London",
-    // "...Berlin") in generateMetadata on each Events/[city] page instead,
-    // so no single region dominates the root domain's SEO signal.
+    "Christian creative gatherings",
+    "Christian performing arts",
+    "Tribe of creatives",
+    "Godly and clean content",
+    "Christian creative tours",
+    // Gatherings & Community
     "Christian physical gatherings",
     "Christian creative events",
     "spiritual seekers community",
@@ -51,7 +52,6 @@ export const metadata = {
     "preorder Antidote merch",
     // Core themes
     "glorify Yahweh",
-    "spiritual editorial movement",
     "creative partnership",
   ],
   authors: [{ name: "Antidote Movement" }],
@@ -62,9 +62,9 @@ export const metadata = {
     alternateLocale: ["en_DE", "en_US", "en_NG", "en_ZA"],
     url: SITE_URL,
     siteName: "Antidote Movement",
-    title: "Antidote Movement — Global Christian Creative Gatherings & Editorial Apparel",
+    title: "Antidote Movement — The Cure The World Needs | Christian Creative Gatherings & Arts",
     description:
-      "A global spiritual-editorial movement of creative and spiritual seekers, rooted in Europe and expanding worldwide. Join our gatherings, preorder organic garments, and partner to glorify Yahweh.",
+      "Spreading the love of God and the consciousness of His light in a dark world through creative arts. Creating platforms where Christian creatives use their gifts to glorify Yahweh.",
     images: [
       {
         url: "/logo.jpg",
@@ -76,15 +76,12 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Antidote Movement",
-    description: "A global spiritual-editorial movement of creative and spiritual seekers.",
+    title: "Antidote Movement — The Cure The World Needs",
+    description: "Spreading the love of God and the consciousness of His light in a dark world through creative arts.",
     images: ["/logo.jpg"],
   },
   alternates: {
     canonical: SITE_URL,
-    // ADDED: placeholder for when/if region-specific routes exist.
-    // Remove entries you don't actually serve — only declare
-    // languages you have real pages for, to avoid duplicate-content issues.
     languages: {
       "en-GB": SITE_URL,
       "en-US": SITE_URL,
@@ -115,20 +112,15 @@ export const viewport = {
   initialScale: 1,
 };
 
-// FIX: removed the single hardcoded NGN Offer block from the root
-// Organization schema — a global org shouldn't carry one currency
-// at the top level. Put accurate Offer/priceCurrency schema on each
-// Product page (merch) and Event page (tickets) instead, where the
-// actual currency for that market is known.
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Antidote Movement",
+  slogan: "The cure the world needs",
   description:
-    "A global spiritual-editorial movement of creative and spiritual seekers, rooted in Europe and expanding worldwide. Join our gatherings, preorder our heavyweight organic garments, and partner to glorify Yahweh.",
+    "Spreading the love of God and the consciousness of His light in a dark world through creative arts. Creating platforms where Christian creatives can use their gifts to glorify Yahweh.",
   url: SITE_URL,
   logo: `${SITE_URL}/logo.jpg`,
-  // ADDED: explicit global signal for Google
   areaServed: "Worldwide",
   inLanguage: "en",
   sameAs: [

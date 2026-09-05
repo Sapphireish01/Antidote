@@ -9,14 +9,15 @@ import styles from "../checkout.module.css";
 
 const TIERS = [
   { id: "25", name: "Equip a Creative", amount: 25, status: "available" },
-  { id: "150", name: "Launch a City", amount: 150, status: "available" },
-  { id: "500", name: "Sustain the Tribe", amount: 500, status: "available" },
-  { id: "1000", name: "Establish a Pillar", amount: 1000, status: "closed" },
+  { id: "50", name: "City Assembly Logistics", amount: 50, status: "available" },
+  { id: "100", name: "Tour & Production", amount: 100, status: "available" },
+  { id: "250", name: "Sanctuary Hub", amount: 250, status: "available" },
 ];
 
 function PartnershipCheckoutContent() {
   const searchParams = useSearchParams();
-  const [selectedTier, setSelectedTier] = useState("25");
+  const [frequency, setFrequency] = useState("monthly"); // "monthly" | "onetime"
+  const [selectedTier, setSelectedTier] = useState("50");
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -38,6 +39,12 @@ function PartnershipCheckoutContent() {
 
   useEffect(() => {
     const amt = searchParams.get("amount");
+    const freq = searchParams.get("frequency");
+
+    if (freq === "onetime" || freq === "monthly") {
+      setFrequency(freq);
+    }
+
     if (amt) {
       const tierExists = TIERS.find((t) => t.id === amt);
       if (tierExists) {
@@ -94,7 +101,7 @@ function PartnershipCheckoutContent() {
     setGeneralError("");
 
     if (isClosed) {
-      setGeneralError("Stewardship Cap Reached: Pillar investments are currently closed for Chapter IV. Please select another tier.");
+      setGeneralError("Stewardship Cap Reached: Please select another tier.");
       return;
     }
 
@@ -132,7 +139,7 @@ function PartnershipCheckoutContent() {
   return (
     <div className={styles.checkoutContainer}>
       <h1 className={`${styles.title} font-editorial`}>Partner With Us</h1>
-      <p className={styles.subtitle}>Empower Kingdom-focused artists and cultural renewal.</p>
+      <p className={styles.subtitle}>Empower Christian creatives and facilitate clean, godly content to glorify Yahweh.</p>
 
       {/* Accessible Live Region for Screen Readers */}
       <div aria-live="assertive" className={styles.liveRegion} style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}>
@@ -148,10 +155,48 @@ function PartnershipCheckoutContent() {
 
       <form onSubmit={handleSubmit} className={styles.layout}>
         <div className={styles.formArea}>
-          {/* Step 1: Contribution Amount */}
+          {/* Step 1: Contribution Frequency & Amount */}
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>1. Support Tier</h2>
+            <h2 className={styles.sectionTitle}>1. Partnership Gift</h2>
             
+            {/* Frequency selection */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "20px" }}>
+              <button
+                type="button"
+                onClick={() => setFrequency("onetime")}
+                className="btn"
+                style={{
+                  backgroundColor: frequency === "onetime" ? "var(--color-espresso)" : "var(--color-stone-light)",
+                  color: frequency === "onetime" ? "var(--color-stone)" : "var(--color-espresso)",
+                  border: "1px solid rgba(212, 196, 183, 0.8)",
+                  borderRadius: "var(--rounded-md)",
+                  padding: "12px",
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  cursor: "pointer"
+                }}
+              >
+                One-Time Gift
+              </button>
+              <button
+                type="button"
+                onClick={() => setFrequency("monthly")}
+                className="btn"
+                style={{
+                  backgroundColor: frequency === "monthly" ? "var(--color-espresso)" : "var(--color-stone-light)",
+                  color: frequency === "monthly" ? "var(--color-stone)" : "var(--color-espresso)",
+                  border: "1px solid rgba(212, 196, 183, 0.8)",
+                  borderRadius: "var(--rounded-md)",
+                  padding: "12px",
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  cursor: "pointer"
+                }}
+              >
+                Monthly Recurring
+              </button>
+            </div>
+
             <div className={styles.selectionGrid}>
               {TIERS.map((tier) => (
                 <div 
@@ -180,7 +225,7 @@ function PartnershipCheckoutContent() {
                     )}
                   </div>
                   <p className={styles.selectorPrice}>
-                    {tier.status === "closed" ? "—" : `£${tier.amount}`}
+                    £{tier.amount}{frequency === "monthly" ? " / mo" : ""}
                   </p>
                 </div>
               ))}
@@ -228,6 +273,9 @@ function PartnershipCheckoutContent() {
                     }}
                     required={useCustom}
                   />
+                  {frequency === "monthly" && (
+                    <span style={{ fontSize: "13px", color: "rgba(58, 46, 38, 0.6)", marginLeft: "6px" }}>/ month</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -364,18 +412,26 @@ function PartnershipCheckoutContent() {
                 <div className={styles.summaryList}>
                   <div className={styles.summaryItem}>
                     <div>
-                      <div className={styles.summaryItemText}>Antidote Patronage</div>
+                      <div className={styles.summaryItemText}>
+                        {frequency === "monthly" ? "Monthly Recurring Partnership" : "One-Time Contribution"}
+                      </div>
                       <div className={styles.summaryItemSubtext}>
-                        {useCustom ? "One-off Contribution" : description}
+                        {useCustom ? "Custom Partnership Support" : description}
                       </div>
                     </div>
-                    <div>£{contributionAmount.toFixed(2)}</div>
+                    <div>
+                      £{contributionAmount.toFixed(2)}
+                      {frequency === "monthly" ? "/mo" : ""}
+                    </div>
                   </div>
                 </div>
 
                 <div className={styles.totalRow}>
-                  <span>Total Contribution</span>
-                  <span>£{contributionAmount.toFixed(2)}</span>
+                  <span>Total {frequency === "monthly" ? "Per Month" : "Due Today"}</span>
+                  <span>
+                    £{contributionAmount.toFixed(2)}
+                    {frequency === "monthly" ? "/mo" : ""}
+                  </span>
                 </div>
               </>
             )}
@@ -386,7 +442,11 @@ function PartnershipCheckoutContent() {
               style={{ width: "100%", padding: "18px" }}
               disabled={isClosed}
             >
-              {isClosed ? "Cap Reached" : "Process Partnership"}
+              {isClosed
+                ? "Cap Reached"
+                : frequency === "monthly"
+                ? `Process Monthly Partnership (£${contributionAmount.toFixed(2)}/mo)`
+                : `Process One-Time Gift (£${contributionAmount.toFixed(2)})`}
             </button>
           </div>
         </div>
@@ -399,7 +459,7 @@ function PartnershipCheckoutContent() {
             <span className={`material-symbols-outlined ${styles.modalIcon}`}>favorite</span>
             <h2 className={`${styles.modalTitle} font-editorial`}>Thank You</h2>
             <p className={styles.modalText}>
-              We are deeply grateful. Your partnership contribution of <strong>£{contributionAmount.toFixed(2)}</strong> has been processed successfully. You will receive email updates about our project deployments.
+              We are deeply grateful. Your {frequency === "monthly" ? "monthly partnership" : "contribution"} of <strong>£{contributionAmount.toFixed(2)}{frequency === "monthly" ? "/mo" : ""}</strong> has been processed successfully. You will receive updates about our Kingdom creative deployments.
             </p>
             <Link href="/" className="btn btn-primary" style={{ width: "100%" }}>
               Back to Homepage

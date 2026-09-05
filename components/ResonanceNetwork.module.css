@@ -1,0 +1,539 @@
+.chronicleSection {
+  position: relative;
+  width: 100%;
+  background-color: #F3EFE9;
+  border-top: 1px solid rgba(58, 46, 38, 0.08);
+  border-bottom: 1px solid rgba(58, 46, 38, 0.08);
+  padding: clamp(64px, 7vw, 96px) 0 0;
+  overflow: hidden;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Header Area */
+.headerArea {
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--color-bronze);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kickerLine {
+  width: 28px;
+  height: 1.5px;
+  background-color: var(--color-bronze);
+}
+
+.sectionTitle {
+  font-size: clamp(34px, 4.2vw, 54px);
+  color: var(--color-espresso);
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+/* Narrative Text (2-column editorial layout) */
+.narrativeLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: clamp(24px, 3.5vw, 36px);
+}
+
+@media (min-width: 900px) {
+  .narrativeLayout {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+}
+
+.leadText {
+  font-size: clamp(18px, 1.8vw, 21px);
+  line-height: 1.6;
+  color: var(--color-espresso);
+  font-weight: 500;
+}
+
+.bodyText {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(58, 46, 38, 0.85);
+}
+
+/* Interactive Cities Chip Bar (Replaces Clunky Top Cards with Sleek Filter Navigation) */
+.citiesChipBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed rgba(139, 106, 69, 0.35);
+  border-radius: 999px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.chipBarLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-espresso);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-right: 4px;
+}
+
+.pulseDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #D49A3D;
+  box-shadow: 0 0 8px rgba(212, 154, 61, 0.9);
+  animation: pulseBeacon 2s infinite ease-in-out;
+}
+
+@keyframes pulseBeacon {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.6;
+  }
+}
+
+.chipsScroll {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.cityChip {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-espresso);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.cityChip:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(212, 154, 61, 0.4);
+  color: #8B6A45;
+}
+
+.chipActive {
+  background: #FFFFFF !important;
+  border: 1px solid #D49A3D !important;
+  color: var(--color-espresso) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(212, 154, 61, 0.2) !important;
+}
+
+.chipFuture {
+  color: #8B6A45;
+  font-weight: 600;
+  font-style: italic;
+  background: rgba(212, 154, 61, 0.1);
+  border: 1px dashed rgba(212, 154, 61, 0.4);
+}
+
+.chipFuture:hover,
+.chipFuture.chipActive {
+  background: rgba(212, 154, 61, 0.2) !important;
+  border-color: #D49A3D !important;
+}
+
+.starIcon {
+  color: #D49A3D;
+  font-style: normal;
+}
+
+/* Globe Curved Horizon Container */
+.globeContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1180 / 720;
+  max-height: 720px;
+  overflow: visible;
+  margin-top: 12px;
+}
+
+.globeSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Base World Continents */
+.baseLand {
+  fill: #857C74;
+  transition: fill 0.3s ease;
+}
+
+/* Visited Countries */
+.visitedCountryLand {
+  fill: #D49A3D;
+  opacity: 0.82;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 0 6px rgba(212, 154, 61, 0.25));
+}
+
+.countryActiveLand {
+  fill: #FFAA2A !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 20px rgba(255, 170, 42, 0.85)) !important;
+}
+
+/* Tour Route Lines */
+.tourRoute {
+  opacity: 0.75;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.routeActive {
+  opacity: 1;
+  stroke: #FFAA2A !important;
+  stroke-width: 3.5 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 170, 42, 0.9));
+}
+
+.futureRoute {
+  stroke-dasharray: 6 7;
+  opacity: 0.8;
+  animation: dashMove 24s linear infinite;
+}
+
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* City Node Marker Elements */
+.cityNode {
+  cursor: pointer;
+  outline: none;
+}
+
+.cityNode:hover .cityTagText,
+.cityNode:focus .cityTagText {
+  fill: #000000;
+  font-weight: 800;
+}
+
+.beaconRing {
+  animation: nodeBeaconPulse 2.8s ease-out infinite;
+  transform-origin: center;
+}
+
+.beaconRingDelayed {
+  animation: nodeBeaconPulse 2.8s ease-out 1.2s infinite;
+  transform-origin: center;
+}
+
+@keyframes nodeBeaconPulse {
+  0% {
+    r: 4;
+    opacity: 0.95;
+  }
+
+  100% {
+    r: 22;
+    opacity: 0;
+  }
+}
+
+/* Node Staggered Labels (Clean, Editorial Typography with Subtle Text Halo) */
+.cityTagText {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  fill: #2B211B;
+  letter-spacing: 0.02em;
+  user-select: none;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.95), 0 -1px 4px rgba(255, 255, 255, 0.95), 1px 0 4px rgba(255, 255, 255, 0.95), -1px 0 4px rgba(255, 255, 255, 0.95);
+  transition: all 0.25s ease;
+}
+
+.cityTagTextActive {
+  fill: #140E0A !important;
+  font-weight: 800 !important;
+  font-size: 12px !important;
+  text-shadow: 0 1px 5px rgba(255, 255, 255, 1), 0 -1px 5px rgba(255, 255, 255, 1), 1px 0 5px rgba(255, 255, 255, 1), -1px 0 5px rgba(255, 255, 255, 1) !important;
+}
+
+.futureTagText {
+  font-style: italic;
+  fill: #8B6A45;
+  font-size: 12px;
+}
+
+/* 5. INTERACTIVE MINI POPUP (Anchored right at node) */
+.miniPopup {
+  position: absolute;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 154, 61, 0.45);
+  border-radius: 8px;
+  padding: 16px 18px;
+  box-shadow: 0 16px 36px rgba(58, 46, 38, 0.16), 0 4px 12px rgba(212, 154, 61, 0.1);
+  pointer-events: auto;
+  z-index: 50;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: popupReveal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.popupBottom {
+  transform: translate(-50%, 18px);
+}
+
+.popupTop {
+  transform: translate(-50%, calc(-100% - 18px));
+}
+
+@keyframes popupReveal {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Pointer Arrow */
+.popupArrow {
+  position: absolute;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: #FFFFFF;
+}
+
+.arrowTop {
+  top: -6px;
+  transform: translateX(-50%) rotate(45deg);
+  border-left: 1px solid rgba(212, 154, 61, 0.45);
+  border-top: 1px solid rgba(212, 154, 61, 0.45);
+}
+
+.arrowBottom {
+  bottom: -6px;
+  transform: translateX(-50%) rotate(45deg);
+  border-right: 1px solid rgba(212, 154, 61, 0.45);
+  border-bottom: 1px solid rgba(212, 154, 61, 0.45);
+}
+
+.popupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.popupBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #D49A3D;
+  text-transform: uppercase;
+}
+
+.popupBadgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #D49A3D;
+  box-shadow: 0 0 6px rgba(212, 154, 61, 0.9);
+}
+
+.popupRightMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.popupDate {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(58, 46, 38, 0.55);
+}
+
+.popupCloseBtn {
+  background: none;
+  border: none;
+  color: rgba(58, 46, 38, 0.45);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  transition: color 0.2s ease;
+}
+
+.popupCloseBtn:hover {
+  color: var(--color-espresso);
+}
+
+.popupTitleArea {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.popupCityName {
+  font-family: var(--font-editorial);
+  font-size: 22px;
+  color: var(--color-espresso);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.popupCountryName {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: rgba(58, 46, 38, 0.65);
+}
+
+.popupTag {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: #8B6A45;
+  margin-bottom: 8px;
+}
+
+.popupDescription {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(58, 46, 38, 0.85);
+  margin: 0;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .miniPopup {
+    width: 240px;
+    padding: 12px 14px;
+  }
+
+  .popupCityName {
+    font-size: 18px;
+  }
+
+  .popupDescription {
+    font-size: 11px;
+  }
+
+  .citiesChipBar {
+    border-radius: 12px;
+  }
+}
+
+/* Bottom Action Strip */
+.bottomActionStrip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px var(--gutter) clamp(48px, 6vw, 72px);
+  background-color: #F3EFE9;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+
+  .beaconRing,
+  .beaconRingDelayed,
+  .futureRoute,
+  .pulseDot {
+    animation: none !important;
+  }
+
+  .cityNode,
+  .visitedCountryLand,
+  .miniPopup,
+  .cityChip {
+    transition: none !important;
+  }
+}
+
+.inviteLink:hover {
+  color: #8B6A45;
+  border-color: var(--color-espresso);
+}
+
+.inviteArrow {
+  transition: transform 0.25s ease;
+}
+
+.inviteLink:hover .inviteArrow {
+  transform: translateX(4px);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .citiesChipBar {
+    border-radius: 16px;
+  }
+
+  .spotlightCard {
+    padding: 20px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .pulseDot {
+    animation: none !important;
+  }
+
+  .cityCard,
+  .cityChip,
+  .spotlightCard {
+    transition: none !important;
+  }
+}

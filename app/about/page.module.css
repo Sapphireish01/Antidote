@@ -1,6 +1,6 @@
 .heroSection {
   background: var(--gradient-stone);
-  padding: clamp(80px, 10vw, 160px) 0;
+  /* padding: clamp(80px, 10vw, 160px) 0; */
   border-bottom: 1px solid rgba(58, 46, 38, 0.05);
 }
 
@@ -20,13 +20,14 @@
   text-transform: uppercase;
   display: block;
   margin-bottom: 24px;
+  word-spacing: 155px;
 }
 
 .heroTitle {
   font-size: clamp(48px, 6vw, 80px);
   color: var(--color-espresso);
   line-height: 1.1;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 }
 
 .heroLead {
@@ -104,12 +105,15 @@
     align-items: center;
     justify-content: space-between;
   }
+
   .storyText {
-    flex: 1.2;
-    padding-right: 64px;
+    flex: 1.1;
+    padding-right: 32px;
   }
-  .storyImageWrapper {
-    flex: 0.8;
+
+  .storyNetworkWrapper {
+    flex: 1;
+    width: 100%;
   }
 }
 
@@ -122,26 +126,11 @@
 .storyTitle {
   font-size: clamp(36px, 4vw, 56px);
   color: var(--color-espresso);
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
-.storyImageWrapper {
+.storyNetworkWrapper {
   width: 100%;
-  border-radius: var(--rounded-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-luxurious-md);
-  aspect-ratio: 4 / 5;
-}
-
-.storyImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.storyImageWrapper:hover .storyImage {
-  transform: scale(1.05);
 }
 
 /* Call to Action */

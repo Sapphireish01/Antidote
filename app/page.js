@@ -13,16 +13,17 @@ export default function Home() {
     "name": "Antidote Movement",
     "url": "https://antidotemovement.com",
     "logo": "https://antidotemovement.com/logo.png",
-    "description": "An elevated spiritual-editorial movement of creative and spiritual seekers glorifying Yahweh through art, design, and gathering."
+    "slogan": "The cure the world needs",
+    "description": "Spreading the love of God and the consciousness of His light in a dark world through creative arts. Creating platforms where Christian creatives use their gifts to glorify Yahweh."
   };
 
   return (
     <>
       <head>
-        <title>Antidote Movement — Christian Creative Gatherings & Editorial Apparel</title>
+        <title>Antidote Movement — The Cure The World Needs | Christian Creative Gatherings & Arts</title>
         <meta
           name="description"
-          content="An elevated spiritual-editorial movement of creative and spiritual seekers. Join our physical gatherings, preorder our heavyweight organic garments, and partner to glorify Yahweh."
+          content="Antidote Movement — The cure the world needs. Spreading the love of God and the consciousness of His light in a dark world through creative arts. Creating spaces and platforms where Christian creatives glorify Yahweh."
         />
         <link rel="canonical" href="https://antidotemovement.com" />
         <script
@@ -35,19 +36,30 @@ export default function Home() {
       <main>
         {/* Hero Section */}
         <section className={styles.hero}>
-          <div
-            className={styles.heroBg}
-            style={{
-              backgroundImage: `url('/hero/landing-page-hero.webp')`
-            }}
-          />
+          <div className={styles.heroBg}>
+            <video
+              className={styles.heroVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              poster="/hero/landing-page-hero.webp"
+            >
+              <source src="/hero/hero-video.mp4" type="video/mp4" />
+            </video>
+            <div className={styles.heroOverlay} />
+          </div>
           <div className={`${styles.heroContent} animate-fade-in-up`}>
             <h1 className={`${styles.heroTitle} font-editorial`}>Antidote Movement</h1>
             <p className={styles.heroSubtitle}>The cure the world needs</p>
+            <p className="text-body-lg" style={{ color: "rgba(245, 242, 237, 0.9)", maxWidth: "560px", marginBottom: "32px", lineHeight: "1.6" }}>
+              Spreading the love of God and the consciousness of His light in a dark world through creative arts.
+            </p>
 
             <div className={styles.heroActions}>
-              <Link href="/checkout/tickets" className="btn btn-primary">
-                Get Tickets
+              <Link href="/events" className="btn btn-primary">
+                Explore Gatherings
               </Link>
               <Link href="/merch" className="btn btn-secondary">
                 Preorder Merch
@@ -60,116 +72,18 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Mission Strip */}
+        {/* Vision & Mission Strip */}
         <section className={styles.missionStrip}>
           <div className="container">
-            <blockquote className={styles.missionQuote}>
-              "Creating platforms where creatives can use their gifts to glorify Yahweh."
+            <span className="text-label-md" style={{ color: "var(--color-bronze)", display: "block", marginBottom: "16px", textTransform: "uppercase", letterSpacing: "0.15em" }}>
+              Our Calling & Purpose
+            </span>
+            <blockquote className={styles.missionQuote} style={{ marginBottom: "28px" }}>
+              "Creating spaces where God will be glorified through the performing arts."
             </blockquote>
-          </div>
-        </section>
-
-        {/* Events Section */}
-        <section className={styles.eventsSection}>
-          <div className="container">
-            <div className={styles.eventsHeader}>
-              <div className={styles.eventsTitleGroup}>
-                <span className="text-label-md">The Gathering</span>
-                <h2 className="text-headline-lg font-editorial">Upcoming Events</h2>
-              </div>
-            </div>
-
-            <div className={styles.carousel}>
-              {/* Berlin Card */}
-              <div className={styles.eventCard}>
-                <div className={styles.cardStamp}></div>
-                <div className={styles.imageWrapper}>
-                  <img
-                    className={styles.cardImage}
-                    src="/events/image.webp"
-                    alt="Berlin Event"
-                  />
-                </div>
-                <div className={styles.cardDetails}>
-                  <div className={styles.cardMeta}>
-                    <div>
-                      <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Berlin, BE</h3>
-                      <p className="text-label-lg" style={{ color: 'var(--color-bronze)', marginBottom: '4px' }}>Sat Oct. 3 • 4:00 PM</p>
-                      {/* <p className="text-body-xs" style={{ color: 'rgba(60, 42, 33, 0.6)', marginBottom: '8px' }}>Saturday, October 3 • 4:00 PM - 9:30 PM</p> */}
-                      <p className="text-label-md" style={{ color: 'var(--color-espresso)', fontWeight: '600' }}>From €13.96</p>
-                    </div>
-                    <span className={styles.cardLocation} style={{ textAlign: 'right' }}>Church at the South Star</span>
-                  </div>
-                  <Link
-                    href="https://www.eventbrite.com/e/judah-festival-berlin-tickets-1990714984106?aff=ebemoffollowpublishemail&ref=eemail&utm_campaign=following_published_event&utm_content=follow_notification&utm_medium=email&utm_source=eventbrite"
-                    className="btn btn-primary"
-                    style={{ width: '100%' }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Get Tickets
-                  </Link>
-                </div>
-              </div>
-
-              {/* Manchester Card */}
-              <div className={`${styles.eventCard} ${styles.eventCardComingSoon}`}>
-                <div className={styles.cardStamp}></div>
-                <div className={styles.blurredContent}>
-                  <div className={styles.imageWrapper}>
-                    <img
-                      className={styles.cardImage}
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpK69PE2V7bbSu7QVkCmkDu8DDeG8fvhPRf_h4QBg74EHeMctskhHPRTxa1MJGS9plQlslWPNszRT7iQxap1-0zuZ1yWHM_pLsqeu9VhnKwplTqdIn2VRr20eCVpM32s4wLHMJSMn13YAyubGmhhbjrfbfFM2PUFQtY0KBMnJmyvqCmP-Tt6xf7yrZB9bJTKTYbZ__vtYcN8jpPmCoujdSVkPzDuudcXHJ018xqIVfkEbbW2bo6PE"
-                      alt="Manchester Event"
-                    />
-                  </div>
-                  <div className={styles.cardDetails}>
-                    <div className={styles.cardMeta}>
-                      <div>
-                        <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Manchester</h3>
-                        <p className="text-label-lg" style={{ color: 'var(--color-bronze)' }}>October 19, 2024</p>
-                      </div>
-                      <span className={styles.cardLocation}>Victoria Warehouse</span>
-                    </div>
-                    <button className="btn btn-primary" style={{ width: '100%' }} disabled>
-                      Coming Soon
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.comingSoonOverlay}>
-                  <span className={styles.comingSoonBadge}>Coming Soon</span>
-                </div>
-              </div>
-
-              {/* Birmingham Card */}
-              <div className={`${styles.eventCard} ${styles.eventCardComingSoon}`}>
-                <div className={styles.cardStamp}></div>
-                <div className={styles.blurredContent}>
-                  <div className={styles.imageWrapper}>
-                    <img
-                      className={styles.cardImage}
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt3orYUCkay-f92yVr2Y7YUESADJ8STHkas8S-X3oHFIDtJ1UFCNO8jqxERbrIt0MxjeEjV11fFf2qpG0ViyN-iDvzp8u_ffZtXE9xbTyF164c9XmT1QKia9xG3xTjTp5eugeWdX7Y6-qorb3Un0uVOkF8MNQMEZLn6MyfL_v62qAD3yFxTf_zMMjmXftAIrglmOvA00az2OJxdk4X9TnTuRaunadsAeMIvb8hZT0eqw_STeBoAxY"
-                      alt="Birmingham Event"
-                    />
-                  </div>
-                  <div className={styles.cardDetails}>
-                    <div className={styles.cardMeta}>
-                      <div>
-                        <h3 className="text-headline-md font-editorial" style={{ marginBottom: '4px' }}>Birmingham</h3>
-                        <p className="text-label-lg" style={{ color: 'var(--color-bronze)' }}>October 26, 2024</p>
-                      </div>
-                      <span className={styles.cardLocation}>The Custard Factory</span>
-                    </div>
-                    <button className="btn btn-primary" style={{ width: '100%' }} disabled>
-                      Coming Soon
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.comingSoonOverlay}>
-                  <span className={styles.comingSoonBadge}>Coming Soon</span>
-                </div>
-              </div>
-            </div>
+            <p className="text-body-md" style={{ maxWidth: "700px", margin: "0 auto", color: "rgba(245, 242, 237, 0.75)", lineHeight: "1.7" }}>
+              Creating platforms where Christian creatives can use their gifts to glorify Yahweh — taking one city at a time and building a community (Tribe of creatives).
+            </p>
           </div>
         </section>
 
@@ -180,10 +94,10 @@ export default function Home() {
           <div className="container">
             <div className={styles.merchGrid}>
               <div className={styles.merchContent}>
-                <span className="text-label-md">New Drop</span>
+                <span className="text-label-md">Artifacts of Identity</span>
                 <h2 className="font-editorial">The Antidote Drop</h2>
                 <p className="text-body-lg">
-                  Garments crafted for the journey. Made with heavily weighted organic cotton, this piece features the signature Antidote wing embroidery. It’s designed for comfort during the craft and reverence during the rest.
+                  Garments crafted for the journey. Made with heavily weighted organic cotton, each piece carries the signature Antidote wing embroidery — designed for the tribe of Christian creatives walking in reverence, craft, and purpose.
                 </p>
                 <div style={{ marginBottom: '32px' }}>
                   <p className="text-label-lg">Preorder the New Drop - Ships Oct 14th</p>
@@ -234,8 +148,11 @@ export default function Home() {
         <section className={styles.partnerSection}>
           <div className="container">
             <div className={styles.partnerIntro}>
+              <span className="text-label-md" style={{ color: "var(--color-bronze)", display: "block", marginBottom: "8px" }}>Partner with us</span>
               <h2 className="font-editorial">Fuel the Mission</h2>
-              <p className="text-body-lg">Your support directly empowers the next generation of Kingdom-focused creatives.</p>
+              <p className="text-body-lg">
+                Your support directly empowers the next generation of Kingdom-focused creatives and help people encounter Jesus
+              </p>
             </div>
 
             <div className={styles.partnerGrid}>
@@ -246,9 +163,9 @@ export default function Home() {
                 <h3 className={`${styles.tierPrice} font-editorial`}>£25</h3>
                 <p className={styles.tierTitle}>Equip a Creative</p>
                 <ul className={styles.tierFeatures}>
-                  <li>Studio access for 1 day</li>
-                  <li>Essential craft materials</li>
-                  <li>Mentorship credit</li>
+                  <li>Clean content creation tools</li>
+                  <li>Studio access & resources</li>
+                  <li>Mentorship in the creative tribe</li>
                 </ul>
                 <Link href="/checkout/partnership?amount=25" className="btn btn-secondary">
                   Partner Now
@@ -260,11 +177,11 @@ export default function Home() {
                 <div className={styles.tierCardDarkStamp}></div>
                 <span className={`${styles.tierLabel} text-label-md`}>Growth</span>
                 <h3 className={`${styles.tierPrice} font-editorial`}>£150</h3>
-                <p className={styles.tierTitle}>Launch a City</p>
+                <p className={styles.tierTitle}>Launch a City Gathering</p>
                 <ul className={styles.tierFeatures}>
-                  <li>Venue scouting & booking</li>
-                  <li>Production logistics</li>
-                  <li>Local tribe networking</li>
+                  <li>Venue booking & stage production</li>
+                  <li>Tour logistics for Christian artists</li>
+                  <li>Local creative tribe networking</li>
                 </ul>
                 <Link href="/checkout/partnership?amount=150" className="btn btn-primary">
                   Partner Now
@@ -276,11 +193,11 @@ export default function Home() {
                 <div className={styles.tierCardLightStamp}></div>
                 <span className={`${styles.tierLabel} text-label-md`}>Vision</span>
                 <h3 className={`${styles.tierPrice} font-editorial`}>£500</h3>
-                <p className={styles.tierTitle}>Sustain the Tribe</p>
+                <p className={styles.tierTitle}>Sustain the Movement</p>
                 <ul className={styles.tierFeatures}>
-                  <li>Year-round HQ funding</li>
-                  <li>Full production scholarship</li>
-                  <li>International expansion</li>
+                  <li>Full production & tour scholarships</li>
+                  <li>Permanent performing arts spaces</li>
+                  <li>Global creative tour expansion</li>
                 </ul>
                 <Link href="/checkout/partnership?amount=500" className="btn btn-secondary">
                   Partner Now
@@ -291,7 +208,7 @@ export default function Home() {
         </section>
 
         {/* Faces of the Tribe Gallery */}
-        <section className={styles.gallerySection}>
+        {/* <section className={styles.gallerySection}>
           <div className={styles.galleryTitle}>
             <h2 className="text-headline-lg font-editorial container">Faces of the Tribe</h2>
           </div>
@@ -316,7 +233,7 @@ export default function Home() {
               <img className={styles.galleryImage} src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDapUc-y2p11ByiA6oafzBmWZGfuI5wK0apxli5dohwh44yI-OBfucpid8L9MZSMiSIwVARnDxUOdNaL5Fm6NAcwUeWAY-_I1gLPmkqD6FJEHNKGJ7l02u7K5aD_NJ6-rkX0ZlU-xOO9Xi5bWIfDeMLOErAw6NW_GYelkJpQVJ2OM4glJW6aexILK32TAU7j6tZyrOQS_Qe74HfPgFp8z4zgzaX_moXhHohAQ12pAulv3ji5oeTjs" alt="Tribe Face 3" />
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Closing CTA & Newsletter */}
         {/* <section className={styles.closingSection}>

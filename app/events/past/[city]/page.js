@@ -1,7 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { getPastEventById } from "@/lib/data";
+import { getPastEventById, getAllPastEvents } from "@/lib/data";
+import EventGallery from "./EventGallery";
 import styles from "./page.module.css";
 
 const SITE_URL = "https://antidotemovement.global";
@@ -12,44 +13,36 @@ export async function generateMetadata({ params }) {
 
   if (!event) {
     return {
-      title: "Archive Not Found",
-      description: "The requested past gathering could not be found.",
+      title: "Archive Not Found — Antidote Movement",
+      description: "The requested past gathering archive could not be found.",
     };
   }
 
   const pageUrl = `${SITE_URL}/events/past/${event.id}`;
 
   return {
-    title: `Antidote Archive — ${event.city} (${event.chapter})`,
-    description: event.desc,
-    keywords: [
-      `Antidote Archive ${event.city}`,
-      `Antidote ${event.chapter}`,
-      `Past Gathering ${event.city}`,
-      `Christian creative community ${event.city}`,
-      `Christian creative events ${event.city}`,
-      `${event.venue} ${event.city}`,
-    ],
+    title: `${event.title} — Antidote Archives`,
+    description: `Photo archives from ${event.title} featuring ${event.artist}.`,
     openGraph: {
       type: "website",
       locale: "en_GB",
       url: pageUrl,
       siteName: "Antidote Movement",
-      title: `Antidote Archive — ${event.city} (${event.chapter})`,
-      description: event.desc,
+      title: `${event.title} — Antidote Archives`,
+      description: `Photo archives from ${event.title} featuring ${event.artist}.`,
       images: [
         {
           url: event.image,
           width: 1200,
           height: 630,
-          alt: `Antidote Past Chapter in ${event.city}`,
+          alt: event.title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `Antidote Archive — ${event.city} (${event.chapter})`,
-      description: event.desc,
+      title: event.title,
+      description: `Photo archives from ${event.title} featuring ${event.artist}.`,
       images: [event.image],
     },
     alternates: {
@@ -61,6 +54,7 @@ export async function generateMetadata({ params }) {
 export default async function PastEventPage({ params }) {
   const { city } = await params;
   const event = await getPastEventById(city);
+  const allPastEvents = await getAllPastEvents();
 
   if (!event) {
     return (
@@ -69,7 +63,7 @@ export default async function PastEventPage({ params }) {
         <main className={styles.errorState}>
           <h1 className={`${styles.errorTitle} font-editorial`}>Archive Not Found</h1>
           <p className={styles.errorText}>
-            The past assembly details you are searching for are not cataloged in our historical ledger.
+            The past archive you are searching for is not in our ledger.
           </p>
           <Link href="/events/past" className="btn btn-primary">
             Back to Archives
@@ -80,70 +74,10 @@ export default async function PastEventPage({ params }) {
     );
   }
 
-  // Structured Schema for Completed Event & Breadcrumbs
-  const schemaMarkup = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Event",
-        "@id": `${SITE_URL}/events/past/${event.id}#event`,
-        "name": `Antidote Past Chapter — ${event.city} (${event.chapter})`,
-        "description": event.desc,
-        "startDate": event.date,
-        "eventAttendanceMode": "https://schema.org/PhysicalEventAttendanceMode",
-        "eventStatus": "https://schema.org/EventCompleted",
-        "location": {
-          "@type": "Place",
-          "name": event.venue,
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": event.city,
-          },
-        },
-        "image": event.image,
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${SITE_URL}/events/past/${event.id}#breadcrumbs`,
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": SITE_URL,
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Events",
-            "item": `${SITE_URL}/events`,
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Past Chapters",
-            "item": `${SITE_URL}/events/past`,
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "name": `${event.city} (${event.chapter})`,
-            "item": `${SITE_URL}/events/past/${event.id}`,
-          },
-        ],
-      },
-    ],
-  };
+  const otherEvents = allPastEvents.filter((e) => e.id !== event.id);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(schemaMarkup).replace(/</g, "\\u003c"),
-        }}
-      />
-
       <Header />
 
       <main className={styles.detailsPage}>
@@ -154,59 +88,80 @@ export default async function PastEventPage({ params }) {
               Home
             </Link>
             <span className={styles.breadcrumbSeparator}>/</span>
-            <Link href="/events" className={styles.breadcrumbLink}>
-              Events
-            </Link>
-            <span className={styles.breadcrumbSeparator}>/</span>
             <Link href="/events/past" className={styles.breadcrumbLink}>
               Past Chapters
             </Link>
             <span className={styles.breadcrumbSeparator}>/</span>
-            <span style={{ color: "var(--color-espresso)" }}>{event.city} ({event.chapter})</span>
+            <span style={{ color: "var(--color-espresso)", fontWeight: 600 }}>{event.title}</span>
           </nav>
 
           {/* Hero details card */}
           <div className={styles.archiveHero}>
             <div className={styles.imageSection}>
-              <img src={event.image} alt={event.city} className={styles.eventImage} />
+              <img src={event.image} alt={event.title} className={styles.eventImage} />
             </div>
 
             <div className={styles.infoSection}>
               <div className={styles.headerArea}>
-                <span className={styles.chapterTag}>{event.chapter}</span>
+                <div className={styles.badgeRow}>
+                  <span className={styles.chapterTag}>{event.chapter}</span>
+                  {event.artist && <span className={styles.artistBadge}>{event.artist}</span>}
+                </div>
                 <h1 className={`${styles.archiveTitle} font-editorial`}>
-                  Chapter Archive: {event.city}
+                  {event.title}
                 </h1>
               </div>
 
-              <div className={styles.metaGrid}>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Gathering Date</span>
-                  <span className={styles.metaValue}>{event.date}</span>
-                </div>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Historic Venue</span>
-                  <span className={styles.metaValue}>{event.venue}</span>
-                </div>
+              <div className={styles.photoCountInfo}>
+                <span className="material-symbols-outlined" style={{ fontSize: "18px", color: "var(--color-bronze)" }}>
+                  photo_camera
+                </span>
+                <span>{event.images?.length || 0} Captured Photographs</span>
               </div>
 
-              <div className={styles.descriptionArea}>
-                <h2 className={styles.descriptionTitle}>Gathering Summary</h2>
-                <p className={styles.descriptionText}>{event.desc}</p>
-                
-                <div className={styles.impactSection}>
-                  <h3 className={styles.impactTitle}>Historical Footprint</h3>
-                  <p className={styles.impactValue}>{event.impact}</p>
-                </div>
-              </div>
-
-              <div>
-                <Link href="/events/past" className="btn btn-secondary backBtn">
+              <div className={styles.actionsRow}>
+                <Link href="/events/past" className="btn btn-secondary">
                   Back to Archives
+                </Link>
+                <Link href="/gallery" className="btn btn-primary">
+                  View Full Gallery
                 </Link>
               </div>
             </div>
           </div>
+
+          {/* Full Event Photo Gallery Section */}
+          <EventGallery
+            images={event.images}
+            title={event.title}
+            artist={event.artist}
+            chapter={event.chapter}
+          />
+
+          {/* More Past Chapters Navigator */}
+          {otherEvents.length > 0 && (
+            <section className={styles.otherChaptersSection}>
+              <h2 className={`${styles.otherTitle} font-editorial`}>Explore More Archives</h2>
+              <div className={styles.otherGrid}>
+                {otherEvents.slice(0, 3).map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/events/past/${item.id}`}
+                    className={styles.otherCard}
+                  >
+                    <div className={styles.otherImgWrap}>
+                      <img src={item.image} alt={item.title} loading="lazy" />
+                    </div>
+                    <div className={styles.otherContent}>
+                      <span className={styles.otherChapter}>{item.chapter}</span>
+                      <h3 className={styles.otherCardTitle}>{item.title}</h3>
+                      <p className={styles.otherPhotos}>{item.images?.length || 0} Photos</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </main>
 

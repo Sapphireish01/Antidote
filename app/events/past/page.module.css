@@ -1,7 +1,7 @@
 .heroSection {
   background: var(--gradient-stone);
-  padding: clamp(80px, 10vw, 140px) 0 48px 0;
-  border-bottom: 1px solid rgba(58, 46, 38, 0.05);
+  padding: clamp(80px, 10vw, 130px) 0 48px 0;
+  border-bottom: 1px solid rgba(58, 46, 38, 0.08);
 }
 
 .heroContainer {
@@ -13,81 +13,88 @@
 
 .heroSubtitle {
   font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   color: var(--color-bronze);
   text-transform: uppercase;
   display: block;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .heroTitle {
-  font-size: clamp(40px, 5vw, 64px);
+  font-size: clamp(36px, 5vw, 60px);
   color: var(--color-espresso);
-  line-height: 1.2;
-  margin-bottom: 24px;
+  line-height: 1.15;
+  margin-bottom: 20px;
 }
 
 .heroLead {
   max-width: 680px;
   margin: 0 auto;
   color: rgba(58, 46, 38, 0.8);
-  font-size: clamp(16px, 1.8vw, 20px);
+  font-size: clamp(15px, 1.7vw, 18px);
   line-height: 1.6;
+}
+
+.quickNav {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
 }
 
 /* Archives List */
 .archiveSection {
-  padding: clamp(64px, 8vw, 120px) 0;
+  padding: clamp(48px, 6vw, 96px) 0;
   background-color: var(--color-stone);
 }
 
 .archiveList {
   display: flex;
   flex-direction: column;
-  gap: 64px;
+  gap: 48px;
 }
 
 .archiveCard {
   display: flex;
   flex-direction: column;
   background-color: var(--color-stone-light);
-  border: 1px solid rgba(212, 196, 183, 0.4);
+  border: 1px solid rgba(212, 196, 183, 0.5);
   border-radius: var(--rounded-lg);
   overflow: hidden;
   box-shadow: var(--shadow-luxurious-sm);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .archiveCard:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-luxurious-md);
-  border-color: rgba(139, 106, 69, 0.2);
+  border-color: rgba(139, 106, 69, 0.3);
 }
 
 @media (min-width: 992px) {
   .archiveCard {
     flex-direction: row;
     align-items: stretch;
-    min-height: 360px;
+    min-height: 380px;
   }
   .cardImageWrapper {
-    width: 45%;
+    width: 44%;
     flex-shrink: 0;
   }
   .cardContent {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
   }
 }
 
 .cardImageWrapper {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
+  background-color: var(--color-stone-dark);
 }
 
 @media (min-width: 992px) {
@@ -100,15 +107,33 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .archiveCard:hover .cardImage {
   transform: scale(1.03);
 }
 
+.imageOverlayBadge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background-color: rgba(30, 21, 17, 0.85);
+  backdrop-filter: blur(6px);
+  color: var(--color-tan);
+  padding: 6px 12px;
+  border-radius: var(--rounded-full);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(201, 168, 118, 0.3);
+}
+
 .cardContent {
-  padding: clamp(24px, 4vw, 48px);
+  padding: clamp(24px, 3.5vw, 40px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -119,32 +144,59 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tagGroup {
+  display: flex;
+  align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .chapterTag {
   font-family: var(--font-sans);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-bronze);
   border: 1px solid var(--color-bronze);
-  padding: 4px 10px;
-  border-radius: var(--rounded-default);
+  padding: 3px 10px;
+  border-radius: var(--rounded-sm);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
+.artistTag {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  background-color: rgba(139, 106, 69, 0.15);
+  color: var(--color-espresso);
+  padding: 3px 10px;
+  border-radius: var(--rounded-sm);
+}
+
 .dateTag {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(58, 46, 38, 0.5);
+  color: rgba(58, 46, 38, 0.6);
 }
 
 .cardTitle {
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: clamp(24px, 2.6vw, 34px);
   color: var(--color-espresso);
   line-height: 1.2;
+}
+
+.locationMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: rgba(58, 46, 38, 0.7);
+  font-weight: 500;
 }
 
 .impactBadge {
@@ -153,18 +205,61 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background-color: rgba(201, 168, 118, 0.15); /* tan overlay */
+  background-color: rgba(201, 168, 118, 0.2);
   color: var(--color-espresso);
   padding: 6px 12px;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);
   align-self: flex-start;
-  margin: 4px 0;
 }
 
 .cardDesc {
   color: rgba(58, 46, 38, 0.75);
-  font-size: clamp(14px, 1.6vw, 16px);
-  line-height: 1.7;
+  font-size: clamp(14px, 1.5vw, 15px);
+  line-height: 1.65;
+}
+
+/* Thumbnail Preview Strip */
+.thumbStrip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.thumbItem {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--rounded-sm);
+  overflow: hidden;
+  border: 1px solid rgba(212, 196, 183, 0.6);
+  flex-shrink: 0;
+}
+
+.thumbItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbMore {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--rounded-sm);
+  background-color: var(--color-stone-dark);
+  border: 1px solid rgba(212, 196, 183, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-espresso);
+  flex-shrink: 0;
+}
+
+.cardActions {
+  margin-top: 8px;
 }
 
 /* Back CTA */
@@ -175,7 +270,7 @@
 }
 
 .ctaTitle {
-  font-size: clamp(28px, 3vw, 40px);
+  font-size: clamp(28px, 3.5vw, 42px);
   color: var(--color-espresso);
   margin-bottom: 12px;
 }

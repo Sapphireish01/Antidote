@@ -1,234 +1,287 @@
+"use client";
+
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import styles from "./page.module.css";
 
-export default function PartnershipLedgerPage() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://antidotemovement.com"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Partnership",
-        "item": "https://antidotemovement.com/partnership"
-      }
-    ]
-  };
+const PRESET_AMOUNTS = [
+  { amount: 25, label: "Equip a Creative", desc: "Studio tools & creative mentorship" },
+  { amount: 50, label: "City Assembly", desc: "Local gathering & stage production" },
+  { amount: 100, label: "Tour & Production", desc: "Travel logistics for Christian artists" },
+  { amount: 250, label: "Sanctuary Hub", desc: "Permanent spaces dedicated to Yahweh" },
+];
+
+export default function PartnershipPage() {
+  const [frequency, setFrequency] = useState("monthly"); // "monthly" | "onetime"
+  const [selectedAmount, setSelectedAmount] = useState(50);
+  const [isCustom, setIsCustom] = useState(false);
+  const [customAmount, setCustomAmount] = useState("");
+
+  const activeAmount = isCustom ? Number(customAmount) || 0 : selectedAmount;
+
+  const currentImpact = isCustom
+    ? `Your ${frequency === "monthly" ? "monthly" : "one-time"} gift directly fuels our ongoing tours, content creation, and gathering spaces.`
+    : PRESET_AMOUNTS.find((p) => p.amount === selectedAmount)?.desc || "Directly fuels the Antidote Movement.";
+
+  const checkoutUrl = `/checkout/partnership?amount=${activeAmount}&frequency=${frequency}`;
 
   return (
     <>
-      <head>
-        <title>Partner with Us & Support the Mission — Antidote Movement</title>
-        <meta 
-          name="description" 
-          content="Support the Antidote Movement mission. Choose from once-off or recurring partnership tiers to fund and equip Christian creative hubs globally." 
-        />
-        <link rel="canonical" href="https://antidotemovement.com/partnership" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
       <Header />
-      <main className="w-full">
-        {/* Hero Section */}
-        <section className={styles.heroSection}>
-          <div className={styles.heroContainer}>
-            <span className={styles.heroTag}>COVENANT OF CREATION</span>
-            <h1 className={`${styles.heroTitle} font-editorial`}>The Ledger of Impact</h1>
-            <p className={`${styles.heroDesc} font-editorial`}>
-              "Investing in the Antidote is more than a transaction; it is a sacred alignment with the architects of our shared sanctuary."
-            </p>
-          </div>
-        </section>
 
-        {/* Elegant Rectangular Image Integration */}
-        <div className={styles.maskWrapper}>
-          <div className={styles.standardImageWrapper}>
-            <img 
-              className={styles.maskImage} 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAykiYRT_ggQAjAtauo45ATE1x4-bSDmLRmM4SciSQM2-5j46O4SC2hmlh73GswoZxmx23NleE4f5f3cuQOcTen7JHi8oib71DlP8gIHkSwUpH2RsCDyAiZ7Ji_GsnChWt_gM386Oq1S8djBkXZCI0EYWzaOUOQsig1b4H9RcKMh7JgIHFyazdGi2uyNK-zAl8BiqYKTnnSv5GqzKZmGNWKWZSC7_AlhF-X8Y6XD3I7dwxfg74sj-A" 
-              alt="Sanctuary landscape" 
-            />
-            <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(58, 46, 38, 0.15)" }}></div>
+      <main className={styles.partnershipPage}>
+        <div className={styles.container}>
+          <div className={styles.splitLayout}>
+            {/* Scrollable Left Side: Copy, Story & Visuals */}
+            <div className={styles.scrollableContent}>
+              {/* Header Block */}
+              <div className={styles.introHeader}>
+                <span className={styles.covenantBadge}>COVENANT OF CREATIVES</span>
+                <h1 className={`${styles.mainTitle} font-editorial`}>
+                  Fuel the Movement
+                </h1>
+                <p className={styles.leadQuote}>
+                  "Spreading the love of God and the consciousness of His light in a dark world through creative arts."
+                </p>
+              </div>
+
+              {/* Main Visual Image Card */}
+              <div className={styles.visualCard}>
+                <img
+                  src="/Pastevents/Travis Greene Concert/TRAVIS GREENE MADE A WAY TOUR BERLIN.jpg"
+                  alt="Antidote Gathering Encounter"
+                  className={styles.visualImg}
+                />
+                <div className={styles.visualOverlay}>
+                  <span className={styles.visualTag}>ONE CITY AT A TIME</span>
+                  <p className={styles.visualCaption}>
+                    Building an authentic global tribe of Christian creatives to glorify Yahweh.
+                  </p>
+                </div>
+              </div>
+
+              {/* Mission Pillars (Concise & Focused) */}
+              <div className={styles.pillarsSection}>
+                <h2 className={`${styles.sectionHeading} font-editorial`}>
+                  What Your Support Fuels
+                </h2>
+
+                <div className={styles.pillarItem}>
+                  <div className={styles.pillarIconWrap}>
+                    <span className="material-symbols-outlined">palette</span>
+                  </div>
+                  <div>
+                    <h3 className={styles.pillarTitle}>Godly & Clean Content</h3>
+                    <p className={styles.pillarDesc}>
+                      Providing production resources, studio recording time, and media distribution for Christian artists to produce world-class creative works.
+                    </p>
+                  </div>
+                </div>
+
+                <div className={styles.pillarItem}>
+                  <div className={styles.pillarIconWrap}>
+                    <span className="material-symbols-outlined">tour</span>
+                  </div>
+                  <div>
+                    <h3 className={styles.pillarTitle}>Gatherings & Creative Tours</h3>
+                    <p className={styles.pillarDesc}>
+                      Organising live concerts, worship assemblies, and regional tours that ignite faith, engage communities, and unite believers.
+                    </p>
+                  </div>
+                </div>
+
+                <div className={styles.pillarItem}>
+                  <div className={styles.pillarIconWrap}>
+                    <span className="material-symbols-outlined">temple_buddhist</span>
+                  </div>
+                  <div>
+                    <h3 className={styles.pillarTitle}>Sanctuary Spaces</h3>
+                    <p className={styles.pillarDesc}>
+                      Establishing dedicated hubs where musicians, painters, writers, and performers can rehearse, pray, and create in sacred fellowship.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Secondary Photo Mosaic */}
+              <div className={styles.photoMosaic}>
+                <div className={styles.mosaicCol}>
+                  <img
+                    src="/Pastevents/Dr Prinz- Night of Worship/DSC037131.jpg"
+                    alt="Worship Gathering"
+                    loading="lazy"
+                  />
+                </div>
+                <div className={styles.mosaicCol}>
+                  <img
+                    src="/Pastevents/Smith Night of Worship/DSC03124.jpg"
+                    alt="Creative Community"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              {/* Stewardship Badges */}
+              <div className={styles.stewardshipCard}>
+                <h3 className={`${styles.stewardshipHeading} font-editorial`}>
+                  The Stewardship Covenant
+                </h3>
+                <div className={styles.stewardshipGrid}>
+                  <div className={styles.stewardshipItem}>
+                    <span className="material-symbols-outlined">verified_user</span>
+                    <div>
+                      <strong>Transparency</strong>
+                      <p>Every pound directly empowers creative Kingdom deployment.</p>
+                    </div>
+                  </div>
+                  <div className={styles.stewardshipItem}>
+                    <span className="material-symbols-outlined">auto_awesome</span>
+                    <div>
+                      <strong>Excellence</strong>
+                      <p>Ensuring high artistic craft and unwavering theological devotion.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sticky Right Side: Partnership Giving Panel */}
+            <div className={styles.stickyColumn}>
+              <div className={styles.givingPanel}>
+                <div className={styles.panelHeader}>
+                  <span className={styles.panelLabel}>PARTNERSHIP SELECTION</span>
+                  <h2 className={`${styles.panelTitle} font-editorial`}>
+                    Join the Mission
+                  </h2>
+                </div>
+
+                {/* 2-Option Frequency Switcher */}
+                <div className={styles.frequencyToggle}>
+                  <button
+                    type="button"
+                    onClick={() => setFrequency("onetime")}
+                    className={`${styles.freqBtn} ${
+                      frequency === "onetime" ? styles.freqBtnActive : ""
+                    }`}
+                  >
+                    One-Time Gift
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFrequency("monthly")}
+                    className={`${styles.freqBtn} ${
+                      frequency === "monthly" ? styles.freqBtnActive : ""
+                    }`}
+                  >
+                    <span>Monthly Partner</span>
+                    <span className={styles.recBadge}>Recommended</span>
+                  </button>
+                </div>
+
+                {/* Amount Selection Grid */}
+                <div className={styles.amountGrid}>
+                  {PRESET_AMOUNTS.map((preset) => (
+                    <button
+                      key={preset.amount}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAmount(preset.amount);
+                        setIsCustom(false);
+                      }}
+                      className={`${styles.amountCard} ${
+                        !isCustom && selectedAmount === preset.amount
+                          ? styles.amountCardActive
+                          : ""
+                      }`}
+                    >
+                      <span className={styles.amountNumber}>
+                        £{preset.amount}
+                        {frequency === "monthly" && <small>/mo</small>}
+                      </span>
+                      <span className={styles.amountLabel}>{preset.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Custom Amount Input */}
+                <div
+                  className={`${styles.customBox} ${
+                    isCustom ? styles.customBoxActive : ""
+                  }`}
+                  onClick={() => setIsCustom(true)}
+                >
+                  <span className={styles.customPrefix}>£</span>
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Enter custom amount"
+                    value={customAmount}
+                    onChange={(e) => {
+                      setCustomAmount(e.target.value);
+                      setIsCustom(true);
+                    }}
+                    className={styles.customInput}
+                  />
+                  {frequency === "monthly" && (
+                    <span className={styles.customSuffix}>/ month</span>
+                  )}
+                </div>
+
+                {/* Live Impact Preview */}
+                <div className={styles.impactPreviewBox}>
+                  <div className={styles.impactHeader}>
+                    <span className="material-symbols-outlined" style={{ fontSize: "16px", color: "var(--color-bronze)" }}>
+                      sparkles
+                    </span>
+                    <span>Your Kingdom Impact</span>
+                  </div>
+                  <p className={styles.impactPreviewText}>{currentImpact}</p>
+                </div>
+
+                {/* Direct Checkout CTA */}
+                <Link
+                  href={checkoutUrl}
+                  className="btn btn-primary"
+                  style={{
+                    width: "100%",
+                    padding: "16px 24px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontSize: "14px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {frequency === "monthly"
+                    ? `Become a Partner (Give £${activeAmount || 0}/mo)`
+                    : `Make a One-Time Gift of £${activeAmount || 0}`}
+                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>
+                    arrow_forward
+                  </span>
+                </Link>
+
+                {/* Guarantee & Security Badges */}
+                <div className={styles.securityRow}>
+                  <span className={styles.secItem}>
+                    <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>lock</span>
+                    Secure 256-bit Encrypted
+                  </span>
+                  {frequency === "monthly" && (
+                    <span className={styles.secItem}>
+                      <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>sync_saved_locally</span>
+                      Cancel Anytime
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Progress Tracking */}
-        <section className={styles.progressSection}>
-          <div className={styles.progressContainer}>
-            <div className={styles.progressHeader}>
-              <div>
-                <p className={styles.progressLabel}>Active Initiative</p>
-                <h2 className={styles.initiativeTitle}>Lagos Hub Launch</h2>
-              </div>
-              <div className={styles.progressPercent}>62% FUNDED</div>
-            </div>
-            
-            <div className={styles.progressBar}>
-              <div className={styles.progressFill} style={{ width: "62%" }}></div>
-              <div className={styles.progressMarker} style={{ left: "62%" }}>
-                <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  keyboard_arrow_up
-                </span>
-              </div>
-            </div>
-            
-            <p className={`${styles.progressDesc} text-body-md`}>
-              Our expansion into the West African creative ecosystem requires £240,000 to establish the permanent Antidote Hub. Every contribution elevates the collective ceiling.
-            </p>
-          </div>
-        </section>
-
-        {/* Tier Ladder System */}
-        <section className={styles.ladderSection}>
-          <div className={styles.ladderLine}></div>
-          <div className={styles.ladderContainer}>
-            <div className={styles.ladderHeader}>
-              <h3>PARTNERSHIP TIERS</h3>
-              <div className={styles.ladderHeaderLine}></div>
-            </div>
-
-            <div className={styles.ladderGrid}>
-              {/* Tier 1: Support */}
-              <div className={`${styles.ladderCard} ${styles.cardTier1}`}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.cardLabel}>TIER 01</span>
-                  <div className={styles.levelBadge}>LVL 1</div>
-                </div>
-                <h4 className={`${styles.cardTitle} font-editorial`}>Support</h4>
-                <p className={styles.cardDesc}>
-                  Equips one creative with the foundational tools needed to begin their upward journey.
-                </p>
-                <Link href="/checkout/partnership?amount=25" className={styles.cardAction}>
-                  INITIATE →
-                </Link>
-              </div>
-
-              {/* Tier 2: Growth */}
-              <div className={`${styles.ladderCard} ${styles.cardTier2}`}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.cardLabel}>TIER 02</span>
-                  <div className={styles.levelBadge}>LVL 2</div>
-                </div>
-                <h4 className={`${styles.cardTitle} font-editorial`}>Growth</h4>
-                <p className={styles.cardDesc}>
-                  Funds the development of a masterclass series, mentoring a cohort of twelve.
-                </p>
-                <Link href="/checkout/partnership?amount=150" className={styles.cardAction}>
-                  INITIATE →
-                </Link>
-              </div>
-
-              {/* Tier 3: Vision */}
-              <div className={`${styles.ladderCard} ${styles.cardTier3}`}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.cardLabel}>TIER 03</span>
-                  <div className={styles.levelBadge}>LVL 3</div>
-                </div>
-                <h4 className={`${styles.cardTitle} font-editorial`}>Vision</h4>
-                <p className={styles.cardDesc}>
-                  Directly contributes to the operational infrastructure of a new city hub launch.
-                </p>
-                <Link href="/checkout/partnership?amount=500" className={styles.cardAction}>
-                  INITIATE →
-                </Link>
-              </div>
-
-              {/* Tier 4: Pillar */}
-              <div className={`${styles.ladderCard} ${styles.ladderCardDark} ${styles.cardTier4}`} style={{ position: "relative" }}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.cardLabel}>TIER 04</span>
-                  <div className={`${styles.levelBadge} ${styles.largeBadge}`}>ELITE</div>
-                </div>
-                <h4 className={`${styles.cardTitle} font-editorial`} style={{ color: "var(--color-stone)" }}>Pillar</h4>
-                <p className={styles.cardDesc} style={{ color: "rgba(245, 242, 237, 0.7)" }}>
-                  The ultimate alignment. Endows a permanent scholarship for emerging visionaries.
-                </p>
-                <Link href="/checkout/partnership?amount=1000" className={styles.cardAction}>
-                  CONVENE →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Stewardship Promise */}
-        <section className={styles.stewardshipSection}>
-          <div className={styles.stewardshipGrid}>
-            <div>
-              <h2 className={`${styles.stewardshipTitle} font-editorial`}>The Stewardship Promise</h2>
-              <div className={styles.promises}>
-                <div className={styles.promiseItem}>
-                  <span className={`material-symbols-outlined ${styles.promiseIcon}`}>verified_user</span>
-                  <div>
-                    <h5 className={styles.promiseTitleText}>RADICAL TRANSPARENCY</h5>
-                    <p className={styles.promiseDesc}>Every dollar is tracked in our quarterly Ledger report, accessible to all partners.</p>
-                  </div>
-                </div>
-                
-                <div className={styles.promiseItem}>
-                  <span className={`material-symbols-outlined ${styles.promiseIcon}`}>history_edu</span>
-                  <div>
-                    <h5 className={styles.promiseTitleText}>EDITORIAL OVERSIGHT</h5>
-                    <p className={styles.promiseDesc}>Our editorial board ensures all funded projects align with the Antidote aesthetic and ethics.</p>
-                  </div>
-                </div>
-
-                <div className={styles.promiseItem}>
-                  <span className={`material-symbols-outlined ${styles.promiseIcon}`}>diversity_1</span>
-                  <div>
-                    <h5 className={styles.promiseTitleText}>COVENANT NETWORK</h5>
-                    <p className={styles.promiseDesc}>Join a restricted community of patrons including designers, poets, and founders.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.stewardshipImageArea}>
-              <img 
-                className={styles.stewardshipImage} 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4GG3IDDQeZzwF17E4CHHtVJjmGHz5_lYIARz_s-Eek3norXZBxYyBLP3FW1-mXIcnzIXgfwD2QkXswBXgHwP2EXKICRJ6JGucn-Ll2kWwO4Mc09XxFmXxB7ZW3kTSLmGSUKvE4HPbeyfaksJwWR_gVGjz9rPlAj3W5qfWusmIemF1Igfk7FTEKqaa_xdlIhy3C7izDokdyxeqQsBS5PNbERuN5BgF_S3rQKWP5ke-Ef8l30vamk8" 
-                alt="Sanctuary stewardship" 
-              />
-              <div className={styles.stewardshipLabel}>
-                TRUSTED LEGACY
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Sanctuary */}
-        <section className={styles.ctaSanctuary}>
-          <div className={styles.ctaContainer}>
-            <div className={styles.ctaDivider}>
-              <div className={styles.ctaLine}></div>
-              <span className={`material-symbols-outlined ${styles.ctaDividerIcon}`}>diamond</span>
-              <div className={styles.ctaLine}></div>
-            </div>
-            
-            <h2 className={styles.ctaTitle}>"Become the architect of the new quiet."</h2>
-            <p className={styles.ctaDesc}>Inquire about bespoke partnership structures or legacy endowments.</p>
-            
-            <div className={styles.ctaButtons}>
-              <Link href="/checkout/partnership?amount=150" className="btn btn-primary">
-                GIVE ONCE
-              </Link>
-              <Link href="/checkout/partnership?amount=500" className="btn btn-secondary">
-                ESTABLISH COVENANT
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
+
       <Footer />
     </>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import AboutHero from "@/components/AboutHero";
+import ResonanceNetwork from "@/components/ResonanceNetwork";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -12,7 +14,8 @@ export default function AboutPage() {
     "name": "Antidote Movement",
     "url": "https://antidotemovement.com",
     "logo": "https://antidotemovement.com/logo.png",
-    "description": "An elevated spiritual-editorial movement of creative and spiritual seekers glorifying Yahweh through art, design, and gathering.",
+    "slogan": "The cure the world needs",
+    "description": "Spreading the love of God and the consciousness of His light in a dark world through creative arts. Creating spaces and platforms where Christian creatives use their gifts to glorify Yahweh.",
     "sameAs": [
       "https://instagram.com/antidote.movement"
     ]
@@ -21,10 +24,10 @@ export default function AboutPage() {
   return (
     <>
       <head>
-        <title>About the Tribe — Antidote Movement</title>
-        <meta 
-          name="description" 
-          content="Discover the heartbeat of Antidote Movement—an elevated spiritual-editorial movement of creative and spiritual seekers glorifying Yahweh through design, art, and gathering." 
+        <title>About the Movement, Vision & Mission — Antidote Movement</title>
+        <meta
+          name="description"
+          content="Antidote Movement — The cure the world needs. Spreading the love of God and the consciousness of His light in a dark world through creative arts. Learn about our vision, mission, and goals."
         />
         <link rel="canonical" href="https://antidotemovement.com/about" />
         <script
@@ -36,89 +39,58 @@ export default function AboutPage() {
       <Header />
 
       <main className="w-full">
-        {/* Editorial Hero */}
-        <section className={styles.heroSection}>
-          <div className={styles.heroContainer}>
-            <span className={styles.heroSubtitle}>OUR IDENTITY</span>
-            <h1 className={`${styles.heroTitle} font-editorial`}>The Quiet Cure</h1>
-            <p className={`${styles.heroLead} text-body-lg`}>
-              Antidote Movement exists to cultivate a sanctuary for creative expression that honors the Creator. In a world defined by noise and distraction, we choose silence, craft, and reverence.
-            </p>
-          </div>
-        </section>
+        {/* Living Crosses & Worshipping Figures Hero Section */}
+        <AboutHero />
 
-        {/* Philosophy Grid */}
-        <section className={styles.philosophySection}>
+        {/* Vision, Mission & Goals Grid */}
+        <section id="foundations-section" className={styles.philosophySection}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <span className="text-label-md">The Pillars</span>
-              <h2 className="text-headline-lg font-editorial">Our Sacred Stance</h2>
+              <span className="text-label-md">Core Foundations</span>
+              <h2 className="text-headline-lg font-editorial">Vision, Mission & Goals</h2>
             </div>
 
             <div className={styles.pillarsGrid}>
               <div className={styles.pillarCard}>
-                <h3 className={`${styles.pillarTitle} font-editorial`}>I. Glorifying Yahweh</h3>
+                <h3 className={`${styles.pillarTitle} font-editorial`}>Our Vision</h3>
                 <p className="text-body-md">
-                  We believe that the capacity to create is a divine reflection. Every line drawn, garment stitched, and note played is an act of communion and devotion to the Lord.
+                  Creating spaces where God will be glorified through the performing arts. We build uplifting environments where sound, movement, word, and imagery reflect the majesty of our Creator.
                 </p>
               </div>
 
               <div className={styles.pillarCard}>
-                <h3 className={`${styles.pillarTitle} font-editorial`}>II. Uncompromised Craft</h3>
+                <h3 className={`${styles.pillarTitle} font-editorial`}>Our Mission</h3>
                 <p className="text-body-md">
-                  We reject the disposable culture. From heavy 500GSM organic cotton fibers to intentional typographic hierarchies, our work is crafted to endure and inspire.
+                  Create platforms where Christian creatives can use their gifts to glorify Yahweh. Taking one city at a time and building a vibrant community — a global Tribe of creatives.
                 </p>
               </div>
 
               <div className={styles.pillarCard}>
-                <h3 className={`${styles.pillarTitle} font-editorial`}>III. The Gathered Tribe</h3>
+                <h3 className={`${styles.pillarTitle} font-editorial`}>Our Goals</h3>
                 <p className="text-body-md">
-                  We gather in physical spaces to slow down, share tables, and participate in collective resonance. Community is the antidote to the isolated digital self.
+                  • Facilitate the creation of godly and clean content for the world.<br /><br />
+                  • Organise godly gatherings to engage people in authentic community.<br /><br />
+                  • Organise tours for Christian creatives to bring God's light city by city.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Narrative & Legacy Section */}
-        <section className={styles.storySection}>
-          <div className="container">
-            <div className={styles.storyLayout}>
-              <div className={styles.storyText}>
-                <h2 className={`${styles.storyTitle} font-editorial`}>The Chronicle</h2>
-                <p className="text-body-md">
-                  Founded in London in 2023, Antidote Movement began as a small gathering of designers, poets, and musicians seeking depth in an age of superficiality. We recognized that the modern creative engine is often driven by performance, ego, and haste.
-                </p>
-                <p className="text-body-md">
-                  We sought a different rhythm—one that values silence, craftsmanship, and spiritual alignment. Over the past year, we have expanded our city gatherings across the UK, Europe, and now Africa and North America, creating local ecosystems of creators who support each other's development.
-                </p>
-                <p className="text-body-md">
-                  Through our limited edition preorder garments, physical assemblies, and stewardship partnerships, we fund and develop spaces where creatives can use their talents to renew culture.
-                </p>
-              </div>
-              <div className={styles.storyImageWrapper}>
-                <img 
-                  className={styles.storyImage} 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4GG3IDDQeZzwF17E4CHHtVJjmGHz5_lYIARz_s-Eek3norXZBxYyBLP3FW1-mXIcnzIXgfwD2QkXswBXgHwP2EXKICRJ6JGucn-Ll2kWwO4Mc09XxFmXxB7ZW3kTSLmGSUKvE4HPbeyfaksJwWR_gVGjz9rPlAj3W5qfWusmIemF1Igfk7FTEKqaa_xdlIhy3C7izDokdyxeqQsBS5PNbERuN5BgF_S3rQKWP5ke-Ef8l30vamk8" 
-                  alt="Antidote creative study session" 
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Narrative & Legacy Section: Full-Bleed Resonance Network */}
+        <ResonanceNetwork />
 
         {/* Call to Action */}
         <section className={styles.ctaSection}>
           <div className="container">
-            <h2 className={`${styles.ctaTitle} font-editorial`}>Participate in the Rhythms</h2>
-            <p className="text-body-lg">Whether by attending a gathering, acquiring our craft, or supporting the ledger.</p>
+            <h2 className={`${styles.ctaTitle} font-editorial`}>Join the Tribe</h2>
+            <p className="text-body-lg">Experience our gatherings, wear the vision, or partner with us to fuel the movement.</p>
             <div className={styles.ctaButtons}>
               <Link href="/events" className="btn btn-primary">
                 Explore Gatherings
               </Link>
               <Link href="/partnership" className="btn btn-secondary">
-                Support the Mission
+                Partner With Us
               </Link>
             </div>
           </div>
