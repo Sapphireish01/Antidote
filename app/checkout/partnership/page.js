@@ -5,149 +5,160 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { giftAPI, paymentAPI } from "@/lib/api";
 import styles from "../checkout.module.css";
 
-const TIERS = [
-  { id: "25", name: "Equip a Creative", amount: 25, status: "available" },
-  { id: "50", name: "City Assembly Logistics", amount: 50, status: "available" },
-  { id: "100", name: "Tour & Production", amount: 100, status: "available" },
-  { id: "250", name: "Sanctuary Hub", amount: 250, status: "available" },
+const DEFAULT_TIERS = [
+  { id: "1", name: "City Assembly", amount: 50 },
+  { id: "2", name: "Sanctuary Hub", amount: 250 },
+  { id: "gift-25", name: "Equip a Creative", amount: 25 },
+  { id: "gift-100", name: "Tour & Production", amount: 100 },
 ];
 
 function PartnershipCheckoutContent() {
   const searchParams = useSearchParams();
+  const [tiers, setTiers] = useState(DEFAULT_TIERS);
   const [frequency, setFrequency] = useState("monthly"); // "monthly" | "onetime"
-  const [selectedTier, setSelectedTier] = useState("50");
+  const [selectedTierId, setSelectedTierId] = useState("1");
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Patron details
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
 
-  // Card input states
-  const [cardholderName, setCardholderName] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
-  const [cvv, setCvv] = useState("");
-  
-  // Validation error states
+  // Error handling
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
 
   useEffect(() => {
+    async function loadGifts() {
+      const res = await giftAPI.getGifts();
+      if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
+        const loaded = res.data.map((g) => ({
+          id: String(g.id),
+          name: g.name,
+          amount: parseFloat(g.price) || 0,
+        }));
+        setTiers(loaded);
+      }
+    }
+    loadGifts();
+  }, []);
+
+  useEffect(() => {
+    const giftId = searchParams.get("giftId");
     const amt = searchParams.get("amount");
+    const customAmt = searchParams.get("customAmount");
     const freq = searchParams.get("frequency");
 
     if (freq === "onetime" || freq === "monthly") {
       setFrequency(freq);
     }
 
-    if (amt) {
-      const tierExists = TIERS.find((t) => t.id === amt);
-      if (tierExists) {
-        setSelectedTier(amt);
+    if (customAmt) {
+      setCustomAmount(customAmt);
+      setUseCustom(true);
+    } else if (giftId) {
+      setSelectedTierId(giftId);
+      setUseCustom(false);
+    } else if (amt) {
+      const found = tiers.find((t) => t.amount === Number(amt));
+      if (found) {
+        setSelectedTierId(found.id);
         setUseCustom(false);
       } else {
         setCustomAmount(amt);
         setUseCustom(true);
       }
     }
-  }, [searchParams]);
+  }, [searchParams, tiers]);
 
-  const activeTier = TIERS.find((t) => t.id === selectedTier);
-  const isClosed = !useCustom && activeTier?.status === "closed";
-  const contributionAmount = useCustom ? Number(customAmount) || 0 : activeTier ? activeTier.amount : 0;
-  const description = useCustom ? "Custom Partnership Support" : activeTier ? activeTier.name : "";
+  const activeTier = tiers.find((t) => t.id === selectedTierId) || tiers[0];
+  const contributionAmount = useCustom
+    ? Number(customAmount) || 0
+    : activeTier
+    ? activeTier.amount
+    : 0;
+  const description = useCustom
+    ? "Custom Partnership Support"
+    : activeTier
+    ? activeTier.name
+    : "";
 
-  // Luhn algorithm check
-  const validateCardNumber = (number) => {
-    const sanitized = number.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    if (sanitized.length < 13 || sanitized.length > 19) return false;
-    let sum = 0;
-    let shouldDouble = false;
-    for (let i = sanitized.length - 1; i >= 0; i--) {
-      let digit = parseInt(sanitized.charAt(i), 10);
-      if (shouldDouble) {
-        if ((digit *= 2) > 9) digit -= 9;
-      }
-      sum += digit;
-      shouldDouble = !shouldDouble;
-    }
-    return sum % 10 === 0;
-  };
-
-  // Card Expiry check (MM/YY)
-  const validateExpiry = (exp) => {
-    const match = exp.trim().match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
-    if (!match) return false;
-    const month = parseInt(match[1], 10);
-    const year = parseInt("20" + match[2], 10);
-    const now = new Date();
-    const expiryDate = new Date(year, month - 1, 1);
-    const currentMonthDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    return expiryDate >= currentMonthDate;
-  };
-
-  const validateCVV = (val) => {
-    return /^[0-9]{3,4}$/.test(val.trim());
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = {};
     setGeneralError("");
 
-    if (isClosed) {
-      setGeneralError("Stewardship Cap Reached: Please select another tier.");
-      return;
+    if (!firstName.trim()) formErrors.firstName = "First name is required.";
+    if (!lastName.trim()) formErrors.lastName = "Last name is required.";
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+      formErrors.email = "A valid email address is required.";
     }
 
     if (contributionAmount <= 0) {
-      setGeneralError("Partnership amount must be greater than zero.");
+      setGeneralError("Partnership contribution must be greater than £0.");
       return;
-    }
-
-    if (!cardholderName.trim()) {
-      formErrors.cardholderName = "Cardholder name is required.";
-    }
-
-    if (!validateCardNumber(cardNumber)) {
-      formErrors.cardNumber = "Invalid card number. Please check the digits.";
-    }
-
-    if (!validateExpiry(expiry)) {
-      formErrors.expiry = "Invalid expiry date. Must be MM/YY and in the future.";
-    }
-
-    if (!validateCVV(cvv)) {
-      formErrors.cvv = "Invalid CVV. Must be 3 or 4 digits.";
     }
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
-      setGeneralError("Partnership processing failed. Please resolve the highlighted errors.");
+      setGeneralError("Please complete all required patron fields.");
       return;
     }
 
     setErrors({});
-    setIsSuccess(true);
+    setIsSubmitting(true);
+
+    // Build API payload ensuring EXACTLY ONE of gift or custom_amount is sent
+    const payload = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      recurrent_type: frequency === "monthly" ? "monthly" : "oneoff",
+    };
+
+    if (useCustom) {
+      payload.custom_amount = String(contributionAmount.toFixed(2));
+    } else {
+      payload.gift = String(activeTier.id);
+    }
+
+    const res = await paymentAPI.initiatePartnerPayment(payload);
+
+    if (res.ok && res.data?.url) {
+      // Redirect patron to Stripe Checkout
+      window.location.href = res.data.url;
+    } else {
+      setIsSubmitting(false);
+      setGeneralError(
+        res.error ||
+          "Could not initialize secure checkout session. Please try again or contact support."
+      );
+    }
   };
 
   return (
     <div className={styles.checkoutContainer}>
       <h1 className={`${styles.title} font-editorial`}>Partner With Us</h1>
-      <p className={styles.subtitle}>Empower Christian creatives and facilitate clean, godly content to glorify Yahweh.</p>
+      <p className={styles.subtitle}>
+        Empower Christian creatives and facilitate clean, godly content to glorify Yahweh.
+      </p>
 
-      {/* Accessible Live Region for Screen Readers */}
-      <div aria-live="assertive" className={styles.liveRegion} style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}>
+      {/* Accessible Live Region */}
+      <div
+        aria-live="assertive"
+        className={styles.liveRegion}
+        style={{ position: "absolute", width: "1px", height: "1px", overflow: "hidden" }}
+      >
         {generalError}
       </div>
 
       {generalError && (
-        <div className={styles.errorBanner} role="alert">
+        <div className={styles.errorBanner} role="alert" style={{ marginBottom: "24px" }}>
           <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>error</span>
           <p>{generalError}</p>
         </div>
@@ -158,22 +169,35 @@ function PartnershipCheckoutContent() {
           {/* Step 1: Contribution Frequency & Amount */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>1. Partnership Gift</h2>
-            
+
             {/* Frequency selection */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "20px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "10px",
+                marginBottom: "20px",
+              }}
+            >
               <button
                 type="button"
                 onClick={() => setFrequency("onetime")}
                 className="btn"
                 style={{
-                  backgroundColor: frequency === "onetime" ? "var(--color-espresso)" : "var(--color-stone-light)",
-                  color: frequency === "onetime" ? "var(--color-stone)" : "var(--color-espresso)",
+                  backgroundColor:
+                    frequency === "onetime"
+                      ? "var(--color-espresso)"
+                      : "var(--color-stone-light)",
+                  color:
+                    frequency === "onetime"
+                      ? "var(--color-stone)"
+                      : "var(--color-espresso)",
                   border: "1px solid rgba(212, 196, 183, 0.8)",
                   borderRadius: "var(--rounded-md)",
                   padding: "12px",
                   fontWeight: 600,
                   fontSize: "13px",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
               >
                 One-Time Gift
@@ -183,14 +207,20 @@ function PartnershipCheckoutContent() {
                 onClick={() => setFrequency("monthly")}
                 className="btn"
                 style={{
-                  backgroundColor: frequency === "monthly" ? "var(--color-espresso)" : "var(--color-stone-light)",
-                  color: frequency === "monthly" ? "var(--color-stone)" : "var(--color-espresso)",
+                  backgroundColor:
+                    frequency === "monthly"
+                      ? "var(--color-espresso)"
+                      : "var(--color-stone-light)",
+                  color:
+                    frequency === "monthly"
+                      ? "var(--color-stone)"
+                      : "var(--color-espresso)",
                   border: "1px solid rgba(212, 196, 183, 0.8)",
                   borderRadius: "var(--rounded-md)",
                   padding: "12px",
                   fontWeight: 600,
                   fontSize: "13px",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
               >
                 Monthly Recurring
@@ -198,49 +228,54 @@ function PartnershipCheckoutContent() {
             </div>
 
             <div className={styles.selectionGrid}>
-              {TIERS.map((tier) => (
-                <div 
+              {tiers.map((tier) => (
+                <div
                   key={tier.id}
-                  className={`${styles.selectorCard} ${(!useCustom && selectedTier === tier.id) ? styles.selectorCardSelected : ""} ${tier.status === "closed" ? styles.selectorCardDisabled : ""}`}
+                  className={`${styles.selectorCard} ${
+                    !useCustom && selectedTierId === tier.id
+                      ? styles.selectorCardSelected
+                      : ""
+                  }`}
                   onClick={() => {
-                    setSelectedTier(tier.id);
+                    setSelectedTierId(tier.id);
                     setUseCustom(false);
                     setGeneralError("");
                     setErrors({});
                   }}
                   role="radio"
-                  aria-checked={!useCustom && selectedTier === tier.id}
+                  aria-checked={!useCustom && selectedTierId === tier.id}
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === " " || e.key === "Enter") {
-                      setSelectedTier(tier.id);
+                      setSelectedTierId(tier.id);
                       setUseCustom(false);
                     }
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <h3 className={styles.selectorTitle}>{tier.name}</h3>
-                    {tier.status === "closed" && (
-                      <span className={styles.soldOutBadge}>Cap Reached</span>
-                    )}
                   </div>
                   <p className={styles.selectorPrice}>
-                    £{tier.amount}{frequency === "monthly" ? " / mo" : ""}
+                    £{tier.amount.toFixed(2)}
+                    {frequency === "monthly" ? " / mo" : ""}
                   </p>
                 </div>
               ))}
             </div>
 
-            <div 
+            <div
               style={{
+                marginTop: "16px",
                 border: "1px solid rgba(212, 196, 183, 0.6)",
                 borderRadius: "var(--rounded-md)",
-                padding: "24px",
+                padding: "20px",
                 backgroundColor: useCustom ? "#ffffff" : "var(--color-stone-light)",
                 borderColor: useCustom ? "var(--color-bronze)" : "rgba(212, 196, 183, 0.6)",
                 cursor: "pointer",
-                boxShadow: useCustom ? "var(--shadow-luxurious-md)" : "var(--shadow-luxurious-sm)",
-                transition: "all 0.3s ease"
+                boxShadow: useCustom
+                  ? "var(--shadow-luxurious-md)"
+                  : "var(--shadow-luxurious-sm)",
+                transition: "all 0.3s ease",
               }}
               onClick={() => {
                 setUseCustom(true);
@@ -256,11 +291,20 @@ function PartnershipCheckoutContent() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <span style={{ fontSize: "16px", fontWeight: "600" }}>Custom Amount:</span>
-                <div style={{ display: "flex", alignItems: "center", borderBottom: "1px solid rgba(58,46,38,0.3)", flex: 1 }}>
+                <span style={{ fontSize: "15px", fontWeight: "600" }}>Custom Amount:</span>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: "1px solid rgba(58,46,38,0.3)",
+                    flex: 1,
+                  }}
+                >
                   <span style={{ marginRight: "4px" }}>£</span>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
+                    min="1"
+                    step="any"
                     value={customAmount}
                     onChange={(e) => setCustomAmount(e.target.value)}
                     placeholder="Enter amount"
@@ -269,12 +313,20 @@ function PartnershipCheckoutContent() {
                       backgroundColor: "transparent",
                       padding: "8px 0",
                       width: "100%",
-                      outline: "none"
+                      outline: "none",
                     }}
                     required={useCustom}
                   />
                   {frequency === "monthly" && (
-                    <span style={{ fontSize: "13px", color: "rgba(58, 46, 38, 0.6)", marginLeft: "6px" }}>/ month</span>
+                    <span
+                      style={{
+                        fontSize: "13px",
+                        color: "rgba(58, 46, 38, 0.6)",
+                        marginLeft: "6px",
+                      }}
+                    >
+                      / month
+                    </span>
                   )}
                 </div>
               </div>
@@ -282,115 +334,111 @@ function PartnershipCheckoutContent() {
           </div>
 
           {/* Step 2: Contact Info */}
-          <div className={styles.section} style={{ opacity: isClosed ? 0.5 : 1, pointerEvents: isClosed ? "none" : "auto" }}>
+          <div className={styles.section}>
             <h2 className={styles.sectionTitle}>2. Patron Details</h2>
             <div className={styles.fieldGrid}>
-              <div className={styles.fieldGrid2} style={{ display: "grid", gap: "20px" }}>
+              <div
+                className={styles.fieldGrid2}
+                style={{ display: "grid", gap: "20px" }}
+              >
                 <div>
-                  <label htmlFor="first-name" className={styles.label}>First Name</label>
-                  <input id="first-name" type="text" className="input-underlined" required value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={isClosed} />
+                  <label htmlFor="first-name" className={styles.label}>
+                    First Name
+                  </label>
+                  <input
+                    id="first-name"
+                    type="text"
+                    className="input-underlined"
+                    required
+                    value={firstName}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      if (errors.firstName) setErrors({ ...errors, firstName: "" });
+                    }}
+                  />
+                  {errors.firstName && (
+                    <span className={styles.fieldErrorText}>{errors.firstName}</span>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor="last-name" className={styles.label}>Last Name</label>
-                  <input id="last-name" type="text" className="input-underlined" required value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={isClosed} />
+                  <label htmlFor="last-name" className={styles.label}>
+                    Last Name
+                  </label>
+                  <input
+                    id="last-name"
+                    type="text"
+                    className="input-underlined"
+                    required
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      if (errors.lastName) setErrors({ ...errors, lastName: "" });
+                    }}
+                  />
+                  {errors.lastName && (
+                    <span className={styles.fieldErrorText}>{errors.lastName}</span>
+                  )}
                 </div>
               </div>
-              <div>
-                <label htmlFor="email" className={styles.label}>Email Address</label>
-                <input id="email" type="email" className="input-underlined" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isClosed} />
+              <div style={{ marginTop: "16px" }}>
+                <label htmlFor="email" className={styles.label}>
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  className="input-underlined"
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors({ ...errors, email: "" });
+                  }}
+                />
+                {errors.email && (
+                  <span className={styles.fieldErrorText}>{errors.email}</span>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Step 3: Payment */}
-          <div className={styles.section} style={{ opacity: isClosed ? 0.5 : 1, pointerEvents: isClosed ? "none" : "auto" }}>
-            <h2 className={styles.sectionTitle}>3. Payment Details</h2>
-            <div className={styles.fieldGrid} style={{ display: "grid", gap: "20px" }}>
-              <div>
-                <label htmlFor="cardholder" className={styles.label}>Cardholder Name</label>
-                <input 
-                  id="cardholder" 
-                  type="text" 
-                  className={`input-underlined ${errors.cardholderName ? styles.inputError : ""}`} 
-                  value={cardholderName}
-                  onChange={(e) => {
-                    setCardholderName(e.target.value);
-                    if (errors.cardholderName) setErrors({ ...errors, cardholderName: "" });
-                  }}
-                  required 
-                  disabled={isClosed}
-                  aria-invalid={errors.cardholderName ? "true" : "false"}
-                  aria-describedby={errors.cardholderName ? "cardholder-error" : undefined}
-                />
-                {errors.cardholderName && (
-                  <span id="cardholder-error" className={styles.fieldErrorText}>{errors.cardholderName}</span>
-                )}
+          {/* Step 3: Secure Payment Flow */}
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>3. Secure Payment</h2>
+            <div
+              style={{
+                backgroundColor: "var(--color-stone-light)",
+                border: "1px solid rgba(212, 196, 183, 0.6)",
+                borderRadius: "var(--rounded-md)",
+                padding: "24px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "14px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span className="material-symbols-outlined" style={{ color: "var(--color-bronze)" }}>
+                  lock
+                </span>
+                <span style={{ fontWeight: 600, fontSize: "15px" }}>
+                  Hosted Stripe Checkout
+                </span>
               </div>
-              <div>
-                <label htmlFor="cardnumber" className={styles.label}>Card Number</label>
-                <input 
-                  id="cardnumber" 
-                  type="text" 
-                  placeholder="•••• •••• •••• ••••" 
-                  className={`input-underlined ${errors.cardNumber ? styles.inputError : ""}`}
-                  value={cardNumber}
-                  onChange={(e) => {
-                    setCardNumber(e.target.value);
-                    if (errors.cardNumber) setErrors({ ...errors, cardNumber: "" });
-                  }}
-                  required 
-                  disabled={isClosed}
-                  aria-invalid={errors.cardNumber ? "true" : "false"}
-                  aria-describedby={errors.cardNumber ? "cardnumber-error" : undefined}
-                />
-                {errors.cardNumber && (
-                  <span id="cardnumber-error" className={styles.fieldErrorText}>{errors.cardNumber}</span>
-                )}
-              </div>
-              <div className={styles.fieldGrid3} style={{ display: "grid", gap: "20px" }}>
-                <div>
-                  <label htmlFor="expiry" className={styles.label}>Expiry Date</label>
-                  <input 
-                    id="expiry" 
-                    type="text" 
-                    placeholder="MM/YY" 
-                    className={`input-underlined ${errors.expiry ? styles.inputError : ""}`}
-                    value={expiry}
-                    onChange={(e) => {
-                      setExpiry(e.target.value);
-                      if (errors.expiry) setErrors({ ...errors, expiry: "" });
-                    }}
-                    required 
-                    disabled={isClosed}
-                    aria-invalid={errors.expiry ? "true" : "false"}
-                    aria-describedby={errors.expiry ? "expiry-error" : undefined}
-                  />
-                  {errors.expiry && (
-                    <span id="expiry-error" className={styles.fieldErrorText}>{errors.expiry}</span>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="cvv" className={styles.label}>CVV</label>
-                  <input 
-                    id="cvv" 
-                    type="text" 
-                    placeholder="•••" 
-                    className={`input-underlined ${errors.cvv ? styles.inputError : ""}`}
-                    maxLength={4} 
-                    value={cvv}
-                    onChange={(e) => {
-                      setCvv(e.target.value);
-                      if (errors.cvv) setErrors({ ...errors, cvv: "" });
-                    }}
-                    required 
-                    disabled={isClosed}
-                    aria-invalid={errors.cvv ? "true" : "false"}
-                    aria-describedby={errors.cvv ? "cvv-error" : undefined}
-                  />
-                  {errors.cvv && (
-                    <span id="cvv-error" className={styles.fieldErrorText}>{errors.cvv}</span>
-                  )}
-                </div>
+              <p style={{ fontSize: "14px", lineHeight: "1.6", color: "var(--color-charcoal)" }}>
+                You will be redirected to the official encrypted Stripe payment page to complete your contribution securely. We support cards, Apple Pay, Google Pay, and bank payments.
+              </p>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "16px",
+                  fontSize: "12px",
+                  color: "rgba(58, 46, 38, 0.7)",
+                  marginTop: "8px",
+                }}
+              >
+                <span>✓ 256-Bit SSL Encryption</span>
+                <span>✓ PCI DSS Compliant</span>
+                {frequency === "monthly" && <span>✓ Cancel Anytime</span>}
               </div>
             </div>
           </div>
@@ -400,73 +448,50 @@ function PartnershipCheckoutContent() {
         <div className={styles.summaryArea}>
           <div className={styles.summaryCard}>
             <h2 className={styles.summaryTitle}>Partnership Summary</h2>
-            {isClosed ? (
-              <div style={{ textAlign: "center", padding: "16px 0" }}>
-                <span className={styles.soldOutBadge} style={{ fontSize: "14px", padding: "8px 16px" }}>Cap Reached</span>
-                <p className="text-body-md" style={{ color: "var(--color-error)", marginTop: "16px" }}>
-                  This stewardship tier is currently closed.
-                </p>
-              </div>
-            ) : (
-              <>
-                <div className={styles.summaryList}>
-                  <div className={styles.summaryItem}>
-                    <div>
-                      <div className={styles.summaryItemText}>
-                        {frequency === "monthly" ? "Monthly Recurring Partnership" : "One-Time Contribution"}
-                      </div>
-                      <div className={styles.summaryItemSubtext}>
-                        {useCustom ? "Custom Partnership Support" : description}
-                      </div>
-                    </div>
-                    <div>
-                      £{contributionAmount.toFixed(2)}
-                      {frequency === "monthly" ? "/mo" : ""}
-                    </div>
+            <div className={styles.summaryList}>
+              <div className={styles.summaryItem}>
+                <div>
+                  <div className={styles.summaryItemText}>
+                    {frequency === "monthly"
+                      ? "Monthly Recurring Partnership"
+                      : "One-Time Contribution"}
+                  </div>
+                  <div className={styles.summaryItemSubtext}>
+                    {useCustom ? "Custom Partnership Support" : description}
                   </div>
                 </div>
-
-                <div className={styles.totalRow}>
-                  <span>Total {frequency === "monthly" ? "Per Month" : "Due Today"}</span>
-                  <span>
-                    £{contributionAmount.toFixed(2)}
-                    {frequency === "monthly" ? "/mo" : ""}
-                  </span>
+                <div>
+                  £{contributionAmount.toFixed(2)}
+                  {frequency === "monthly" ? "/mo" : ""}
                 </div>
-              </>
-            )}
+              </div>
+            </div>
 
-            <button 
-              type="submit" 
-              className={`btn btn-primary ${isClosed ? styles.btnDisabled : ""}`}
-              style={{ width: "100%", padding: "18px" }}
-              disabled={isClosed}
+            <div className={styles.totalRow}>
+              <span>Total {frequency === "monthly" ? "Per Month" : "Due Today"}</span>
+              <span>
+                £{contributionAmount.toFixed(2)}
+                {frequency === "monthly" ? "/mo" : ""}
+              </span>
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ width: "100%", padding: "18px", marginTop: "16px" }}
+              disabled={isSubmitting}
             >
-              {isClosed
-                ? "Cap Reached"
-                : frequency === "monthly"
-                ? `Process Monthly Partnership (£${contributionAmount.toFixed(2)}/mo)`
-                : `Process One-Time Gift (£${contributionAmount.toFixed(2)})`}
+              {isSubmitting ? (
+                <span>Connecting to Checkout...</span>
+              ) : frequency === "monthly" ? (
+                `Proceed to Stripe (£${contributionAmount.toFixed(2)}/mo)`
+              ) : (
+                `Proceed to Stripe (£${contributionAmount.toFixed(2)})`
+              )}
             </button>
           </div>
         </div>
       </form>
-
-      {/* Success Modal */}
-      {isSuccess && (
-        <div className={styles.overlay}>
-          <div className={styles.modal}>
-            <span className={`material-symbols-outlined ${styles.modalIcon}`}>favorite</span>
-            <h2 className={`${styles.modalTitle} font-editorial`}>Thank You</h2>
-            <p className={styles.modalText}>
-              We are deeply grateful. Your {frequency === "monthly" ? "monthly partnership" : "contribution"} of <strong>£{contributionAmount.toFixed(2)}{frequency === "monthly" ? "/mo" : ""}</strong> has been processed successfully. You will receive updates about our Kingdom creative deployments.
-            </p>
-            <Link href="/" className="btn btn-primary" style={{ width: "100%" }}>
-              Back to Homepage
-            </Link>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -476,11 +501,16 @@ export default function PartnershipCheckout() {
     <>
       <Header />
       <main className="w-full">
-        <Suspense fallback={
-          <div className={styles.checkoutContainer} style={{ textAlign: "center", padding: "100px 0" }}>
-            <p>Loading partnership details...</p>
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div
+              className={styles.checkoutContainer}
+              style={{ textAlign: "center", padding: "100px 0" }}
+            >
+              <p>Loading partnership details...</p>
+            </div>
+          }
+        >
           <PartnershipCheckoutContent />
         </Suspense>
       </main>

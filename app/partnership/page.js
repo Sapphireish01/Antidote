@@ -1,31 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { giftAPI } from "@/lib/api";
 import styles from "./page.module.css";
 
-const PRESET_AMOUNTS = [
-  { amount: 25, label: "Equip a Creative", desc: "Studio tools & creative mentorship" },
-  { amount: 50, label: "City Assembly", desc: "Local gathering & stage production" },
-  { amount: 100, label: "Tour & Production", desc: "Travel logistics for Christian artists" },
-  { amount: 250, label: "Sanctuary Hub", desc: "Permanent spaces dedicated to Yahweh" },
+const DEFAULT_PRESET_AMOUNTS = [
+  { id: "gift-25", amount: 25, label: "Equip a Creative", desc: "Studio tools & creative mentorship" },
+  { id: "1", amount: 50, label: "City Assembly", desc: "Local gathering & stage production" },
+  { id: "gift-100", amount: 100, label: "Tour & Production", desc: "Travel logistics for Christian artists" },
+  { id: "2", amount: 250, label: "Sanctuary Hub", desc: "Permanent spaces dedicated to Yahweh" },
 ];
 
 export default function PartnershipPage() {
+  const [presets, setPresets] = useState(DEFAULT_PRESET_AMOUNTS);
   const [frequency, setFrequency] = useState("monthly"); // "monthly" | "onetime"
-  const [selectedAmount, setSelectedAmount] = useState(50);
+  const [selectedPreset, setSelectedPreset] = useState(DEFAULT_PRESET_AMOUNTS[1]); // Default to £50
   const [isCustom, setIsCustom] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
 
-  const activeAmount = isCustom ? Number(customAmount) || 0 : selectedAmount;
+  useEffect(() => {
+    async function loadGifts() {
+      const res = await giftAPI.getGifts();
+      if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
+        const apiPresets = res.data.map((g) => ({
+          id: String(g.id),
+          amount: parseFloat(g.price) || 0,
+          label: g.name,
+          desc: `${g.name} partnership support`,
+        }));
+        setPresets(apiPresets);
+        setSelectedPreset(apiPresets[0]);
+      }
+    }
+    loadGifts();
+  }, []);
+
+  const activeAmount = isCustom ? Number(customAmount) || 0 : selectedPreset?.amount || 0;
 
   const currentImpact = isCustom
     ? `Your ${frequency === "monthly" ? "monthly" : "one-time"} gift directly fuels our ongoing tours, content creation, and gathering spaces.`
-    : PRESET_AMOUNTS.find((p) => p.amount === selectedAmount)?.desc || "Directly fuels the Antidote Movement.";
+    : selectedPreset?.desc || "Directly fuels the Antidote Movement.";
 
-  const checkoutUrl = `/checkout/partnership?amount=${activeAmount}&frequency=${frequency}`;
+  const checkoutUrl = isCustom
+    ? `/checkout/partnership?customAmount=${encodeURIComponent(customAmount)}&frequency=${frequency}`
+    : `/checkout/partnership?giftId=${encodeURIComponent(selectedPreset?.id || "")}&amount=${selectedPreset?.amount || 0}&frequency=${frequency}`;
+
 
   return (
     <>
@@ -182,16 +204,16 @@ export default function PartnershipPage() {
 
                 {/* Amount Selection Grid */}
                 <div className={styles.amountGrid}>
-                  {PRESET_AMOUNTS.map((preset) => (
+                  {presets.map((preset) => (
                     <button
-                      key={preset.amount}
+                      key={preset.id}
                       type="button"
                       onClick={() => {
-                        setSelectedAmount(preset.amount);
+                        setSelectedPreset(preset);
                         setIsCustom(false);
                       }}
                       className={`${styles.amountCard} ${
-                        !isCustom && selectedAmount === preset.amount
+                        !isCustom && selectedPreset?.id === preset.id
                           ? styles.amountCardActive
                           : ""
                       }`}

@@ -58,6 +58,7 @@ export default function Footer() {
             <Link href="/gallery" className={styles.link}>Gallery</Link>
             <Link href="/merch" className={styles.link}>Merch</Link>
             <Link href="/partnership" className={styles.link}>Partner</Link>
+            <Link href="/admin" className={styles.link}>Admin</Link>
           </div>
 
           {/* Right Column: Social Links */}
