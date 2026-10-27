@@ -121,10 +121,13 @@ function PartnershipCheckoutContent() {
       recurrent_type: frequency === "monthly" ? "monthly" : "oneoff",
     };
 
-    if (useCustom) {
-      payload.custom_amount = String(contributionAmount.toFixed(2));
+    // If the tier ID is not a numeric database PK (e.g. fallback "gift-25"), send as custom_amount
+    const isNumericPk = activeTier?.id && /^\d+$/.test(String(activeTier.id));
+
+    if (!useCustom && isNumericPk) {
+      payload.gift = Number(activeTier.id);
     } else {
-      payload.gift = String(activeTier.id);
+      payload.custom_amount = String(contributionAmount.toFixed(2));
     }
 
     const res = await paymentAPI.initiatePartnerPayment(payload);
