@@ -7,33 +7,32 @@ import Link from "next/link";
 import { giftAPI } from "@/lib/api";
 import styles from "./page.module.css";
 
-const DEFAULT_PRESET_AMOUNTS = [
-  { id: "gift-25", amount: 25, label: "Equip a Creative", desc: "Studio tools & creative mentorship" },
-  { id: "1", amount: 50, label: "City Assembly", desc: "Local gathering & stage production" },
-  { id: "gift-100", amount: 100, label: "Tour & Production", desc: "Travel logistics for Christian artists" },
-  { id: "2", amount: 250, label: "Sanctuary Hub", desc: "Permanent spaces dedicated to Yahweh" },
-];
-
 export default function PartnershipPage() {
-  const [presets, setPresets] = useState(DEFAULT_PRESET_AMOUNTS);
+  const [presets, setPresets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [frequency, setFrequency] = useState("monthly"); // "monthly" | "onetime"
-  const [selectedPreset, setSelectedPreset] = useState(DEFAULT_PRESET_AMOUNTS[1]); // Default to £50
+  const [selectedPreset, setSelectedPreset] = useState(null);
   const [isCustom, setIsCustom] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
 
   useEffect(() => {
     async function loadGifts() {
+      setIsLoading(true);
       const res = await giftAPI.getGifts();
       if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
         const apiPresets = res.data.map((g) => ({
           id: String(g.id),
           amount: parseFloat(g.price) || 0,
           label: g.name,
-          desc: `${g.name} partnership support`,
+          desc: `${g.name} — your partnership support directly fuels the Antidote Movement.`,
         }));
         setPresets(apiPresets);
         setSelectedPreset(apiPresets[0]);
+      } else {
+        setPresets([]);
+        setIsCustom(true);
       }
+      setIsLoading(false);
     }
     loadGifts();
   }, []);
@@ -46,7 +45,9 @@ export default function PartnershipPage() {
 
   const checkoutUrl = isCustom
     ? `/checkout/partnership?customAmount=${encodeURIComponent(customAmount)}&frequency=${frequency}`
-    : `/checkout/partnership?giftId=${encodeURIComponent(selectedPreset?.id || "")}&amount=${selectedPreset?.amount || 0}&frequency=${frequency}`;
+    : selectedPreset
+    ? `/checkout/partnership?giftId=${encodeURIComponent(selectedPreset.id)}&amount=${selectedPreset.amount}&frequency=${frequency}`
+    : `/checkout/partnership?frequency=${frequency}`;
 
 
   return (
@@ -204,27 +205,40 @@ export default function PartnershipPage() {
 
                 {/* Amount Selection Grid */}
                 <div className={styles.amountGrid}>
-                  {presets.map((preset) => (
-                    <button
-                      key={preset.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedPreset(preset);
-                        setIsCustom(false);
-                      }}
-                      className={`${styles.amountCard} ${
-                        !isCustom && selectedPreset?.id === preset.id
-                          ? styles.amountCardActive
-                          : ""
-                      }`}
-                    >
-                      <span className={styles.amountNumber}>
-                        £{preset.amount}
-                        {frequency === "monthly" && <small>/mo</small>}
-                      </span>
-                      <span className={styles.amountLabel}>{preset.label}</span>
-                    </button>
-                  ))}
+                  {isLoading ? (
+                    <>
+                      <div className={styles.amountCard} style={{ opacity: 0.5, cursor: "default" }}>
+                        <span className={styles.amountNumber}>...</span>
+                        <span className={styles.amountLabel}>Loading options...</span>
+                      </div>
+                      <div className={styles.amountCard} style={{ opacity: 0.5, cursor: "default" }}>
+                        <span className={styles.amountNumber}>...</span>
+                        <span className={styles.amountLabel}>Loading options...</span>
+                      </div>
+                    </>
+                  ) : presets.length > 0 ? (
+                    presets.map((preset) => (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedPreset(preset);
+                          setIsCustom(false);
+                        }}
+                        className={`${styles.amountCard} ${
+                          !isCustom && selectedPreset?.id === preset.id
+                            ? styles.amountCardActive
+                            : ""
+                        }`}
+                      >
+                        <span className={styles.amountNumber}>
+                          £{preset.amount}
+                          {frequency === "monthly" && <small>/mo</small>}
+                        </span>
+                        <span className={styles.amountLabel}>{preset.label}</span>
+                      </button>
+                    ))
+                  ) : null}
                 </div>
 
                 {/* Custom Amount Input */}
@@ -277,9 +291,11 @@ export default function PartnershipPage() {
                     fontWeight: 700,
                   }}
                 >
-                  {frequency === "monthly"
-                    ? `Become a Partner (Give £${activeAmount || 0}/mo)`
-                    : `Make a One-Time Gift of £${activeAmount || 0}`}
+                  {activeAmount > 0
+                    ? frequency === "monthly"
+                      ? `Become a Partner (Give £${activeAmount}/mo)`
+                      : `Make a One-Time Gift of £${activeAmount}`
+                    : "Become a Partner"}
                   <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>
                     arrow_forward
                   </span>
@@ -289,7 +305,7 @@ export default function PartnershipPage() {
                 <div className={styles.securityRow}>
                   <span className={styles.secItem}>
                     <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>lock</span>
-                    Secure 256-bit Encrypted
+                    Safe & Secure Checkout
                   </span>
                   {frequency === "monthly" && (
                     <span className={styles.secItem}>

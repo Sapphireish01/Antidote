@@ -5,7 +5,17 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CustomDropdown from "@/components/CustomDropdown";
 import styles from "../checkout.module.css";
+
+const TICKET_QUANTITY_OPTIONS = [
+  { value: 1, label: "1 Ticket" },
+  { value: 2, label: "2 Tickets" },
+  { value: 3, label: "3 Tickets" },
+  { value: 4, label: "4 Tickets" },
+  { value: 5, label: "5 Tickets" },
+  { value: 10, label: "10 Tickets" },
+];
 
 const CITIES = [
   { id: "london", name: "London", venue: "The Tabernacle", date: "Oct 12, 2024", price: 35, status: "available" },
@@ -170,26 +180,18 @@ function TicketsCheckoutContent() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <label htmlFor="ticket-quantity" className={styles.label} style={{ marginBottom: 0 }}>Quantity:</label>
-              <select 
-                id="ticket-quantity"
+              <label htmlFor="ticket-quantity" className={styles.label} style={{ marginBottom: 0 }}>
+                Quantity:
+              </label>
+              <CustomDropdown
+                options={TICKET_QUANTITY_OPTIONS}
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
+                onChange={setQuantity}
+                icon="confirmation_number"
+                ariaLabel="Select ticket quantity"
                 disabled={isSoldOut}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: 'transparent',
-                  border: '1px solid rgba(58, 46, 38, 0.3)',
-                  borderRadius: 'var(--rounded-default)',
-                  fontFamily: 'var(--font-sans)',
-                  color: 'var(--color-espresso)',
-                  opacity: isSoldOut ? 0.5 : 1
-                }}
-              >
-                {[1, 2, 3, 4, 5, 10].map((num) => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
+                align="left"
+              />
             </div>
           </div>
 

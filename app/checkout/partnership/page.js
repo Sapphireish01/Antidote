@@ -8,18 +8,12 @@ import Footer from "@/components/Footer";
 import { giftAPI, paymentAPI } from "@/lib/api";
 import styles from "../checkout.module.css";
 
-const DEFAULT_TIERS = [
-  { id: "1", name: "City Assembly", amount: 50 },
-  { id: "2", name: "Sanctuary Hub", amount: 250 },
-  { id: "gift-25", name: "Equip a Creative", amount: 25 },
-  { id: "gift-100", name: "Tour & Production", amount: 100 },
-];
-
 function PartnershipCheckoutContent() {
   const searchParams = useSearchParams();
-  const [tiers, setTiers] = useState(DEFAULT_TIERS);
+  const [tiers, setTiers] = useState([]);
+  const [loadingTiers, setLoadingTiers] = useState(true);
   const [frequency, setFrequency] = useState("monthly"); // "monthly" | "onetime"
-  const [selectedTierId, setSelectedTierId] = useState("1");
+  const [selectedTierId, setSelectedTierId] = useState("");
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +29,7 @@ function PartnershipCheckoutContent() {
 
   useEffect(() => {
     async function loadGifts() {
+      setLoadingTiers(true);
       const res = await giftAPI.getGifts();
       if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
         const loaded = res.data.map((g) => ({
@@ -43,7 +38,10 @@ function PartnershipCheckoutContent() {
           amount: parseFloat(g.price) || 0,
         }));
         setTiers(loaded);
+      } else {
+        setTiers([]);
       }
+      setLoadingTiers(false);
     }
     loadGifts();
   }, []);
@@ -73,10 +71,14 @@ function PartnershipCheckoutContent() {
         setCustomAmount(amt);
         setUseCustom(true);
       }
+    } else if (tiers.length > 0 && !selectedTierId && !useCustom) {
+      setSelectedTierId(tiers[0].id);
+    } else if (tiers.length === 0 && !loadingTiers && !customAmount) {
+      setUseCustom(true);
     }
-  }, [searchParams, tiers]);
+  }, [searchParams, tiers, loadingTiers]);
 
-  const activeTier = tiers.find((t) => t.id === selectedTierId) || tiers[0];
+  const activeTier = tiers.find((t) => t.id === selectedTierId) || (tiers.length > 0 ? tiers[0] : null);
   const contributionAmount = useCustom
     ? Number(customAmount) || 0
     : activeTier
@@ -231,39 +233,45 @@ function PartnershipCheckoutContent() {
             </div>
 
             <div className={styles.selectionGrid}>
-              {tiers.map((tier) => (
-                <div
-                  key={tier.id}
-                  className={`${styles.selectorCard} ${
-                    !useCustom && selectedTierId === tier.id
-                      ? styles.selectorCardSelected
-                      : ""
-                  }`}
-                  onClick={() => {
-                    setSelectedTierId(tier.id);
-                    setUseCustom(false);
-                    setGeneralError("");
-                    setErrors({});
-                  }}
-                  role="radio"
-                  aria-checked={!useCustom && selectedTierId === tier.id}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === " " || e.key === "Enter") {
+              {loadingTiers ? (
+                <div style={{ gridColumn: "1 / -1", padding: "16px", color: "rgba(58, 46, 38, 0.6)", fontSize: "14px", textAlign: "center" }}>
+                  Loading partnership options...
+                </div>
+              ) : (
+                tiers.map((tier) => (
+                  <div
+                    key={tier.id}
+                    className={`${styles.selectorCard} ${
+                      !useCustom && selectedTierId === tier.id
+                        ? styles.selectorCardSelected
+                        : ""
+                    }`}
+                    onClick={() => {
                       setSelectedTierId(tier.id);
                       setUseCustom(false);
-                    }
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <h3 className={styles.selectorTitle}>{tier.name}</h3>
+                      setGeneralError("");
+                      setErrors({});
+                    }}
+                    role="radio"
+                    aria-checked={!useCustom && selectedTierId === tier.id}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === " " || e.key === "Enter") {
+                        setSelectedTierId(tier.id);
+                        setUseCustom(false);
+                      }
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <h3 className={styles.selectorTitle}>{tier.name}</h3>
+                    </div>
+                    <p className={styles.selectorPrice}>
+                      £{tier.amount.toFixed(2)}
+                      {frequency === "monthly" ? " / mo" : ""}
+                    </p>
                   </div>
-                  <p className={styles.selectorPrice}>
-                    £{tier.amount.toFixed(2)}
-                    {frequency === "monthly" ? " / mo" : ""}
-                  </p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             <div
@@ -424,7 +432,7 @@ function PartnershipCheckoutContent() {
                   lock
                 </span>
                 <span style={{ fontWeight: 600, fontSize: "15px" }}>
-                  Hosted Stripe Checkout
+                  Official Stripe Checkout
                 </span>
               </div>
               <p style={{ fontSize: "14px", lineHeight: "1.6", color: "var(--color-charcoal)" }}>
@@ -439,8 +447,8 @@ function PartnershipCheckoutContent() {
                   marginTop: "8px",
                 }}
               >
-                <span>✓ 256-Bit SSL Encryption</span>
-                <span>✓ PCI DSS Compliant</span>
+                <span>✓ Bank-Grade Encryption</span>
+                <span>✓ Certified Secure Payments</span>
                 {frequency === "monthly" && <span>✓ Cancel Anytime</span>}
               </div>
             </div>

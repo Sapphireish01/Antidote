@@ -37,10 +37,10 @@ export default function AdminLoginPage() {
         <div className={styles.loginContainer}>
           <div className={styles.loginCard}>
             <div className={styles.loginHeader}>
-              <span className={styles.badge}>PORTAL AUTHENTICATION</span>
-              <h1 className={`${styles.title} font-editorial`}>Admin Sign-in</h1>
+              <span className={styles.badge}>MANAGEMENT PORTAL</span>
+              <h1 className={`${styles.title} font-editorial`}>Welcome Back</h1>
               <p style={{ fontSize: "13px", color: "rgba(58, 46, 38, 0.7)", marginTop: "6px" }}>
-                Authorized access for Antidote financial and merchandise managers.
+                Sign in to manage partnership gifts, merchandise, and store preorders.
               </p>
             </div>
 
@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
                 style={{ width: "100%", padding: "14px", marginTop: "12px" }}
                 disabled={loading}
               >
-                {loading ? "Authenticating..." : "Sign In to Admin"}
+                {loading ? "Signing in..." : "Sign In"}
               </button>
             </form>
 
