@@ -1205,3 +1205,47 @@
   text-align: center;
   margin-bottom: 28px;
 }
+
+.loginNotice {
+  background-color: rgba(184, 134, 11, 0.08);
+  border: 1px solid rgba(184, 134, 11, 0.3);
+  color: #7a5806;
+  padding: 12px 14px;
+  border-radius: var(--rounded-md);
+  margin-bottom: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+.loginSuccessBanner {
+  background-color: rgba(46, 125, 50, 0.08);
+  border: 1px solid rgba(46, 125, 50, 0.3);
+  color: #1e5a22;
+  padding: 12px 14px;
+  border-radius: var(--rounded-md);
+  margin-bottom: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+.btnSpinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: adminSpin 0.8s linear infinite;
+}
+
+@keyframes adminSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

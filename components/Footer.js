@@ -58,10 +58,9 @@ export default function Footer() {
             <Link href="/gallery" className={styles.link}>Gallery</Link>
             <Link href="/merch" className={styles.link}>Merch</Link>
             <Link href="/partnership" className={styles.link}>Partner</Link>
-            <Link href="/admin" className={styles.link}>Admin</Link>
           </div>
 
-          {/* Right Column: Social Links */}
+          {/* Right Column: Social Links & Admin Portal */}
           <div className={styles.socialsColumn}>
             <a
               href="https://instagram.com/antidote.movement"
@@ -98,6 +97,26 @@ export default function Footer() {
                 <path d="M12.525.01c.13-.01.26-.01.39-.01 1.09.01 2.18.01 3.27.01.07.72.35 1.41.81 1.98.67.83 1.62 1.37 2.67 1.53v3.42c-1.12-.04-2.22-.38-3.17-1-.31-.2-.59-.44-.84-.71l-.02 5.37c0 1.25-.26 2.47-.78 3.6-1.07 2.37-3.14 4.07-5.69 4.67-1.39.33-2.84.31-4.22-.05-1.9-.49-3.56-1.68-4.63-3.32C-.48 13.91-.49 11.45.54 9.38c.84-1.68 2.29-2.99 4.06-3.66.97-.37 2-.54 3.03-.52V8.71c-.72-.05-1.45.09-2.09.43-.88.46-1.5 1.3-1.7 2.27-.22.97.02 2 .65 2.76.63.76 1.57 1.15 2.56 1.07.9-.07 1.71-.62 2.13-1.42.23-.44.34-.94.34-1.44l.02-12.11z"/>
               </svg>
             </a>
+            <Link
+              href="/admin/login"
+              className={styles.adminIconLink}
+              aria-label="Admin Portal"
+              title="Admin Portal"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </Link>
           </div>
         </div>
       </div>

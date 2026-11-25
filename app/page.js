@@ -167,7 +167,7 @@ export default function Home() {
                   <li>Studio access & resources</li>
                   <li>Mentorship in the creative tribe</li>
                 </ul>
-                <Link href="/checkout/partnership?amount=25" className="btn btn-secondary">
+                <Link href="/partnership" className="btn btn-secondary">
                   Partner Now
                 </Link>
               </div>
@@ -183,7 +183,7 @@ export default function Home() {
                   <li>Tour logistics for Christian artists</li>
                   <li>Local creative tribe networking</li>
                 </ul>
-                <Link href="/checkout/partnership?amount=150" className="btn btn-primary">
+                <Link href="/partnership" className="btn btn-primary">
                   Partner Now
                 </Link>
               </div>
@@ -199,7 +199,7 @@ export default function Home() {
                   <li>Permanent performing arts spaces</li>
                   <li>Global creative tour expansion</li>
                 </ul>
-                <Link href="/checkout/partnership?amount=500" className="btn btn-secondary">
+                <Link href="/partnership" className="btn btn-secondary">
                   Partner Now
                 </Link>
               </div>

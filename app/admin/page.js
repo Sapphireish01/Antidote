@@ -31,6 +31,7 @@ export default function AdminDashboardPage() {
   const fileInputRef = useRef(null);
 
   // Authentication & Session
+  const [authState, setAuthState] = useState("loading"); // "loading" | "authenticated" | "unauthenticated"
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
@@ -91,24 +92,44 @@ export default function AdminDashboardPage() {
   };
 
   /* =========================================================================
-   * Auth Verification
+   * Auth Verification & Session Lifecycle
    * ========================================================================= */
   useEffect(() => {
     const accessToken = authStorage.getAccessToken();
     const currentUser = authStorage.getUser();
 
     if (!accessToken) {
-      router.push("/admin/login");
+      setAuthState("unauthenticated");
+      router.replace("/admin/login?reason=unauthorized");
       return;
     }
 
     setToken(accessToken);
     setUser(currentUser);
+    setAuthState("authenticated");
+  }, [router]);
+
+  // Reactive listener for session expiration triggered by API calls
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null);
+      setToken(null);
+      setAuthState("unauthenticated");
+      router.replace("/admin/login?reason=expired");
+    };
+
+    window.addEventListener("antidote:session-expired", handleSessionExpired);
+    return () => {
+      window.removeEventListener("antidote:session-expired", handleSessionExpired);
+    };
   }, [router]);
 
   const handleLogout = () => {
+    setUser(null);
+    setToken(null);
+    setAuthState("unauthenticated");
     logoutUser();
-    router.push("/admin/login");
+    router.replace("/admin/login");
   };
 
   /* =========================================================================
@@ -399,13 +420,53 @@ export default function AdminDashboardPage() {
   /* =========================================================================
    * Render Guard for Auth
    * ========================================================================= */
-  if (!token) {
+  if (authState !== "authenticated" || !token) {
     return (
-      <div style={{ textAlign: "center", padding: "120px 20px" }}>
-        <p style={{ color: "var(--color-espresso)", fontSize: "15px" }}>
-          Loading dashboard...
-        </p>
-      </div>
+      <>
+        <Header />
+        <main className="w-full">
+          <div
+            className={styles.adminContainer}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "65vh",
+              textAlign: "center",
+              padding: "80px 24px",
+            }}
+          >
+            <div
+              className={styles.btnSpinner}
+              style={{
+                width: "36px",
+                height: "36px",
+                border: "3px solid rgba(58, 46, 38, 0.15)",
+                borderTopColor: "var(--color-espresso)",
+                marginBottom: "20px",
+              }}
+              aria-hidden="true"
+            ></div>
+            <span className={styles.badge}>ANTIDOTE SANCTUARY</span>
+            <h2
+              className="font-editorial"
+              style={{
+                fontSize: "24px",
+                color: "var(--color-espresso)",
+                margin: "4px 0 8px",
+                fontWeight: 400,
+              }}
+            >
+              Verifying Access
+            </h2>
+            <p style={{ fontSize: "13px", color: "rgba(58, 46, 38, 0.65)", margin: 0 }}>
+              Preparing your management workspace...
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </>
     );
   }
 

@@ -5,18 +5,13 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { merchAPI } from "@/lib/api";
 import styles from "../checkout.module.css";
-
-const PRODUCTS = {
-  hoodie: { id: "hoodie", name: "The Heavyweight Ritual Hoodie", price: 145, details: "Stone Gray, Size: L", status: "available" },
-  vessel: { id: "vessel", name: "The Altar Vessel", price: 48, details: "Matte Espresso Ceramic", status: "sold-out" },
-  tote: { id: "tote", name: "Ascension Tote", price: 65, details: "Oat Woven Linen", status: "available" },
-  socks: { id: "socks", name: "Grounding Socks", price: 24, details: "Bronze Cotton-Blend", status: "available" },
-};
 
 function PreorderCheckoutContent() {
   const searchParams = useSearchParams();
-  const [productKey, setProductKey] = useState("hoodie");
+  const [product, setProduct] = useState(null);
+  const [loadingProduct, setLoadingProduct] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   
   // Form values
@@ -37,17 +32,40 @@ function PreorderCheckoutContent() {
   const [generalError, setGeneralError] = useState("");
 
   useEffect(() => {
-    const item = searchParams.get("item");
-    if (item && PRODUCTS[item]) {
-      setProductKey(item);
+    async function loadItem() {
+      setLoadingProduct(true);
+      const requestedId = searchParams.get("item");
+      const res = await merchAPI.getMerch();
+      if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
+        let matched = null;
+        if (requestedId) {
+          matched = res.data.find(
+            (m) =>
+              String(m.id) === requestedId ||
+              m.name.toLowerCase().replace(/\s+/g, "-") === requestedId.toLowerCase()
+          );
+        }
+        const chosen = matched || res.data[0];
+        setProduct({
+          id: String(chosen.id),
+          name: chosen.name,
+          price: parseFloat(chosen.price) || 0,
+          details: `${chosen.colorway ? `Color: ${chosen.colorway}` : ""}${chosen.material ? ` · ${chosen.material}` : ""}`,
+          shippingDisplay: chosen.shipping ? `Ships ${chosen.shipping}` : "Standard preorder dispatch",
+          status: "available",
+        });
+      } else {
+        setProduct(null);
+      }
+      setLoadingProduct(false);
     }
+    loadItem();
   }, [searchParams]);
 
-  const product = PRODUCTS[productKey] || PRODUCTS.hoodie;
-  const isSoldOut = product.status === "sold-out";
-  const subtotal = product.price;
-  const shipping = isSoldOut ? 0 : 8.50;
-  const total = isSoldOut ? 0 : subtotal + shipping;
+  const isSoldOut = product?.status === "sold-out";
+  const subtotal = product ? product.price : 0;
+  const shipping = isSoldOut || !product ? 0 : 8.50;
+  const total = isSoldOut || !product ? 0 : subtotal + shipping;
 
   // Luhn algorithm check
   const validateCardNumber = (number) => {
@@ -87,6 +105,11 @@ function PreorderCheckoutContent() {
     const formErrors = {};
     setGeneralError("");
 
+    if (!product) {
+      setGeneralError("Please choose a valid merchandise artifact to preorder.");
+      return;
+    }
+
     if (isSoldOut) {
       setGeneralError("This product preorder has closed. It is currently sold out.");
       return;
@@ -120,68 +143,107 @@ function PreorderCheckoutContent() {
 
   return (
     <div className={styles.checkoutContainer}>
-      <h1 className={`${styles.title} font-editorial`}>Preorder Checkout</h1>
-      <p className={styles.subtitle}>Secure your craft artifacts before the release.</p>
-
-      {/* Accessible Live Region for Screen Readers */}
-      <div aria-live="assertive" className={styles.liveRegion} style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}>
-        {generalError}
+      <div className={styles.headerArea}>
+        <span className={styles.preorderBadge}>EXCLUSIVE PREORDER</span>
+        <h1 className={`${styles.mainHeading} font-editorial`}>Reserve Your Artifact</h1>
+        <p className="text-body-md" style={{ color: "rgba(60, 42, 33, 0.7)" }}>
+          Limited pieces. Complete your details below to secure your piece.
+        </p>
       </div>
 
       {generalError && (
-        <div className={styles.errorBanner} role="alert">
-          <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>error</span>
-          <p>{generalError}</p>
+        <div className={styles.generalErrorBanner} role="alert">
+          <span className="material-symbols-outlined">error</span>
+          <span>{generalError}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className={styles.layout}>
+      <form onSubmit={handleSubmit} className={styles.checkoutLayout} noValidate>
+        {/* Form Inputs Area */}
         <div className={styles.formArea}>
-          {/* Step 1: Shipping Address */}
-          <div className={styles.section} style={{ opacity: isSoldOut ? 0.5 : 1, pointerEvents: isSoldOut ? "none" : "auto" }}>
-            <h2 className={styles.sectionTitle}>1. Shipping Address</h2>
-            <div className={styles.fieldGrid}>
-              <div className={styles.fieldGrid2} style={{ display: "grid", gap: "20px" }}>
-                <div>
-                  <label htmlFor="first-name" className={styles.label}>First Name</label>
-                  <input id="first-name" type="text" className="input-underlined" required value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={isSoldOut} />
-                </div>
-                <div>
-                  <label htmlFor="last-name" className={styles.label}>Last Name</label>
-                  <input id="last-name" type="text" className="input-underlined" required value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={isSoldOut} />
-                </div>
+          {/* Shipping Address */}
+          <div className={styles.sectionCard}>
+            <h2 className={styles.sectionTitle}>1. Shipping Destination</h2>
+            <div className={styles.formGrid}>
+              <div>
+                <label htmlFor="firstName" className={styles.label}>First Name</label>
+                <input 
+                  id="firstName" 
+                  type="text" 
+                  placeholder="John" 
+                  className="input-underlined"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required 
+                />
               </div>
               <div>
-                <label htmlFor="address" className={styles.label}>Street Address</label>
-                <input id="address" type="text" className="input-underlined" placeholder="House number and street name" required value={address} onChange={(e) => setAddress(e.target.value)} disabled={isSoldOut} />
+                <label htmlFor="lastName" className={styles.label}>Last Name</label>
+                <input 
+                  id="lastName" 
+                  type="text" 
+                  placeholder="Doe" 
+                  className="input-underlined"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required 
+                />
               </div>
-              <div className={styles.fieldGrid2} style={{ display: "grid", gap: "20px" }}>
-                <div>
-                  <label htmlFor="city" className={styles.label}>City</label>
-                  <input id="city" type="text" className="input-underlined" required value={city} onChange={(e) => setCity(e.target.value)} disabled={isSoldOut} />
-                </div>
-                <div>
-                  <label htmlFor="postcode" className={styles.label}>Postcode</label>
-                  <input id="postcode" type="text" className="input-underlined" required value={postcode} onChange={(e) => setPostcode(e.target.value)} disabled={isSoldOut} />
-                </div>
+              <div style={{ gridColumn: "span 2" }}>
+                <label htmlFor="address" className={styles.label}>Delivery Address</label>
+                <input 
+                  id="address" 
+                  type="text" 
+                  placeholder="123 Kingdom Way, Apt 4B" 
+                  className="input-underlined"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  required 
+                />
               </div>
               <div>
-                <label htmlFor="country" className={styles.label}>Country</label>
-                <input id="country" type="text" className="input-underlined" defaultValue="United Kingdom" required disabled={isSoldOut} />
+                <label htmlFor="city" className={styles.label}>City</label>
+                <input 
+                  id="city" 
+                  type="text" 
+                  placeholder="London" 
+                  className="input-underlined"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  required 
+                />
+              </div>
+              <div>
+                <label htmlFor="postcode" className={styles.label}>Postcode / ZIP</label>
+                <input 
+                  id="postcode" 
+                  type="text" 
+                  placeholder="W11 2AY" 
+                  className="input-underlined"
+                  value={postcode}
+                  onChange={(e) => setPostcode(e.target.value)}
+                  required 
+                />
               </div>
             </div>
           </div>
 
-          {/* Step 2: Payment Details */}
-          <div className={styles.section} style={{ opacity: isSoldOut ? 0.5 : 1, pointerEvents: isSoldOut ? "none" : "auto" }}>
+          {/* Payment Method */}
+          <div className={styles.sectionCard}>
             <h2 className={styles.sectionTitle}>2. Payment Method</h2>
-            <div className={styles.fieldGrid} style={{ display: "grid", gap: "20px" }}>
-              <div>
-                <label htmlFor="cardholder" className={styles.label}>Cardholder Name</label>
+            <div className={styles.paymentNotice}>
+              <span className="material-symbols-outlined" style={{ fontSize: "18px", color: "var(--color-bronze)" }}>lock</span>
+              <span>Encrypted payment. Card will be charged immediately upon reservation.</span>
+            </div>
+
+            <div className={styles.formGrid}>
+              <div style={{ gridColumn: "span 2" }}>
+                <label htmlFor="cardholderName" className={styles.label}>Name on Card</label>
                 <input 
-                  id="cardholder" 
+                  id="cardholderName" 
                   type="text" 
-                  className={`input-underlined ${errors.cardholderName ? styles.inputError : ""}`} 
+                  placeholder="John Doe" 
+                  className={`input-underlined ${errors.cardholderName ? styles.inputError : ""}`}
                   value={cardholderName}
                   onChange={(e) => {
                     setCardholderName(e.target.value);
@@ -190,19 +252,20 @@ function PreorderCheckoutContent() {
                   required 
                   disabled={isSoldOut}
                   aria-invalid={errors.cardholderName ? "true" : "false"}
-                  aria-describedby={errors.cardholderName ? "cardholder-error" : undefined}
+                  aria-describedby={errors.cardholderName ? "name-error" : undefined}
                 />
                 {errors.cardholderName && (
-                  <span id="cardholder-error" className={styles.fieldErrorText}>{errors.cardholderName}</span>
+                  <span id="name-error" className={styles.fieldErrorText}>{errors.cardholderName}</span>
                 )}
               </div>
-              <div>
-                <label htmlFor="cardnumber" className={styles.label}>Card Number</label>
+              <div style={{ gridColumn: "span 2" }}>
+                <label htmlFor="cardNumber" className={styles.label}>Card Number</label>
                 <input 
-                  id="cardnumber" 
+                  id="cardNumber" 
                   type="text" 
-                  placeholder="•••• •••• •••• ••••" 
+                  placeholder="4000 1234 5678 9010" 
                   className={`input-underlined ${errors.cardNumber ? styles.inputError : ""}`}
+                  maxLength={19}
                   value={cardNumber}
                   onChange={(e) => {
                     setCardNumber(e.target.value);
@@ -211,56 +274,55 @@ function PreorderCheckoutContent() {
                   required 
                   disabled={isSoldOut}
                   aria-invalid={errors.cardNumber ? "true" : "false"}
-                  aria-describedby={errors.cardNumber ? "cardnumber-error" : undefined}
+                  aria-describedby={errors.cardNumber ? "card-error" : undefined}
                 />
                 {errors.cardNumber && (
-                  <span id="cardnumber-error" className={styles.fieldErrorText}>{errors.cardNumber}</span>
+                  <span id="card-error" className={styles.fieldErrorText}>{errors.cardNumber}</span>
                 )}
               </div>
-              <div className={styles.fieldGrid3} style={{ display: "grid", gap: "20px" }}>
-                <div>
-                  <label htmlFor="expiry" className={styles.label}>Expiry Date</label>
-                  <input 
-                    id="expiry" 
-                    type="text" 
-                    placeholder="MM/YY" 
-                    className={`input-underlined ${errors.expiry ? styles.inputError : ""}`}
-                    value={expiry}
-                    onChange={(e) => {
-                      setExpiry(e.target.value);
-                      if (errors.expiry) setErrors({ ...errors, expiry: "" });
-                    }}
-                    required 
-                    disabled={isSoldOut}
-                    aria-invalid={errors.expiry ? "true" : "false"}
-                    aria-describedby={errors.expiry ? "expiry-error" : undefined}
-                  />
-                  {errors.expiry && (
-                    <span id="expiry-error" className={styles.fieldErrorText}>{errors.expiry}</span>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="cvv" className={styles.label}>CVV</label>
-                  <input 
-                    id="cvv" 
-                    type="text" 
-                    placeholder="•••" 
-                    className={`input-underlined ${errors.cvv ? styles.inputError : ""}`}
-                    maxLength={4} 
-                    value={cvv}
-                    onChange={(e) => {
-                      setCvv(e.target.value);
-                      if (errors.cvv) setErrors({ ...errors, cvv: "" });
-                    }}
-                    required 
-                    disabled={isSoldOut}
-                    aria-invalid={errors.cvv ? "true" : "false"}
-                    aria-describedby={errors.cvv ? "cvv-error" : undefined}
-                  />
-                  {errors.cvv && (
-                    <span id="cvv-error" className={styles.fieldErrorText}>{errors.cvv}</span>
-                  )}
-                </div>
+              <div>
+                <label htmlFor="expiry" className={styles.label}>Expiry (MM/YY)</label>
+                <input 
+                  id="expiry" 
+                  type="text" 
+                  placeholder="08/27" 
+                  className={`input-underlined ${errors.expiry ? styles.inputError : ""}`}
+                  maxLength={5} 
+                  value={expiry}
+                  onChange={(e) => {
+                    setExpiry(e.target.value);
+                    if (errors.expiry) setErrors({ ...errors, expiry: "" });
+                  }}
+                  required 
+                  disabled={isSoldOut}
+                  aria-invalid={errors.expiry ? "true" : "false"}
+                  aria-describedby={errors.expiry ? "expiry-error" : undefined}
+                />
+                {errors.expiry && (
+                  <span id="expiry-error" className={styles.fieldErrorText}>{errors.expiry}</span>
+                )}
+              </div>
+              <div>
+                <label htmlFor="cvv" className={styles.label}>CVV</label>
+                <input 
+                  id="cvv" 
+                  type="text" 
+                  placeholder="•••" 
+                  className={`input-underlined ${errors.cvv ? styles.inputError : ""}`}
+                  maxLength={4} 
+                  value={cvv}
+                  onChange={(e) => {
+                    setCvv(e.target.value);
+                    if (errors.cvv) setErrors({ ...errors, cvv: "" });
+                  }}
+                  required 
+                  disabled={isSoldOut}
+                  aria-invalid={errors.cvv ? "true" : "false"}
+                  aria-describedby={errors.cvv ? "cvv-error" : undefined}
+                />
+                {errors.cvv && (
+                  <span id="cvv-error" className={styles.fieldErrorText}>{errors.cvv}</span>
+                )}
               </div>
             </div>
           </div>
@@ -270,7 +332,22 @@ function PreorderCheckoutContent() {
         <div className={styles.summaryArea}>
           <div className={styles.summaryCard}>
             <h2 className={styles.summaryTitle}>Order Summary</h2>
-            {isSoldOut ? (
+            {loadingProduct ? (
+              <div style={{ textAlign: "center", padding: "40px 0" }}>
+                <p style={{ color: "var(--color-espresso)", fontSize: "14px" }}>
+                  Loading artifact details...
+                </p>
+              </div>
+            ) : !product ? (
+              <div style={{ textAlign: "center", padding: "30px 0" }}>
+                <p style={{ color: "var(--color-espresso)", fontSize: "14px", marginBottom: "16px" }}>
+                  Artifact not cataloged in current collection.
+                </p>
+                <Link href="/merch" className="btn btn-secondary">
+                  Back to Merch Store
+                </Link>
+              </div>
+            ) : isSoldOut ? (
               <div style={{ textAlign: "center", padding: "16px 0" }}>
                 <span className={styles.soldOutBadge} style={{ fontSize: "14px", padding: "8px 16px" }}>Sold Out</span>
                 <p className="text-body-md" style={{ color: "var(--color-error)", marginTop: "16px" }}>
@@ -284,6 +361,9 @@ function PreorderCheckoutContent() {
                     <div>
                       <div className={styles.summaryItemText}>{product.name}</div>
                       <div className={styles.summaryItemSubtext}>{product.details}</div>
+                      <div className={styles.summaryItemSubtext} style={{ color: "var(--color-bronze)" }}>
+                        {product.shippingDisplay}
+                      </div>
                     </div>
                     <div>£{product.price.toFixed(2)}</div>
                   </div>
@@ -297,29 +377,29 @@ function PreorderCheckoutContent() {
                   <span>Total</span>
                   <span>£{total.toFixed(2)}</span>
                 </div>
+
+                <button 
+                  type="submit" 
+                  className={`btn btn-primary ${isSoldOut ? styles.btnDisabled : ""}`}
+                  style={{ width: "100%", padding: "18px" }}
+                  disabled={isSoldOut || loadingProduct}
+                >
+                  Reserve Preorder
+                </button>
               </>
             )}
-
-            <button 
-              type="submit" 
-              className={`btn btn-primary ${isSoldOut ? styles.btnDisabled : ""}`}
-              style={{ width: "100%", padding: "18px" }}
-              disabled={isSoldOut}
-            >
-              {isSoldOut ? "Preorder Closed" : "Reserve Preorder"}
-            </button>
           </div>
         </div>
       </form>
 
       {/* Success Modal */}
-      {isSuccess && (
+      {isSuccess && product && (
         <div className={styles.overlay}>
           <div className={styles.modal}>
             <span className={`material-symbols-outlined ${styles.modalIcon}`}>check_circle</span>
             <h2 className={`${styles.modalTitle} font-editorial`}>Preorder Secured</h2>
             <p className={styles.modalText}>
-              Thank you. Your preorder of <strong>{product.name}</strong> is reserved. We will email you shipping updates as the drop releases on October 24.
+              Thank you. Your preorder of <strong>{product.name}</strong> is reserved. We will email you shipping updates as this artifact is released.
             </p>
             <Link href="/" className="btn btn-primary" style={{ width: "100%" }}>
               Back to Homepage

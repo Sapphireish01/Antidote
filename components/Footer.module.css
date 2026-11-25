@@ -156,6 +156,26 @@
   transform: translateY(-2px);
 }
 
+.adminIconLink {
+  color: var(--color-stone-light);
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  padding: 6px;
+  border-radius: var(--rounded-full);
+  border: 1px solid rgba(212, 196, 183, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.adminIconLink:hover {
+  color: var(--color-bronze);
+  opacity: 1;
+  border-color: var(--color-bronze);
+  transform: translateY(-2px);
+}
+
 @media (max-width: 991px) {
   .bottomRow {
     flex-direction: column;

@@ -1,17 +1,18 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WingDivider from "@/components/WingDivider";
 import Link from "next/link";
 import { getAllProducts } from "@/lib/data";
 import NewsletterForm from "@/components/NewsletterForm";
 import styles from "./page.module.css";
+
+export const dynamic = "force-dynamic";
 
 const SITE_URL = "https://antidotemovement.global";
 
 export const metadata = {
   title: "Antidote Movement Merch Preorder & Artifacts",
   description:
-    "Preorder limited Antidote Movement heavyweight ritual hoodies, altar vessels, and grounding garments crafted from organic cotton.",
+    "Preorder limited Antidote Movement heavyweight ritual apparel, vessels, and grounding garments crafted from organic materials.",
   alternates: {
     canonical: `${SITE_URL}/merch`,
   },
@@ -38,9 +39,8 @@ export default async function MerchPage() {
     })),
   };
 
-  // Find the featured product (hoodie)
-  const featuredProduct = products.find((p) => p.id === "hoodie") || products[0];
-  const preorderProducts = products.filter((p) => p.id !== "hoodie");
+  const featuredProduct = products.length > 0 ? products[0] : null;
+  const preorderProducts = products;
 
   return (
     <>
@@ -54,49 +54,64 @@ export default async function MerchPage() {
 
       <main className="w-full">
         {/* Hero Section */}
-        <section className={styles.heroSection}>
-          <div className={styles.heroContainer}>
-            <div className={styles.heroText}>
-              <span className={styles.heroLabel}>THE AUTUMN DROP</span>
-              <h1 className={`${styles.heroTitle} font-editorial`}>
-                <Link href={`/merch/${featuredProduct.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  The Heavyweight <br /> Ritual Hoodie
-                </Link>
-              </h1>
-              <p className={`${styles.heroDescription} text-body-lg`}>
-                {featuredProduct.description}
+        {featuredProduct ? (
+          <section className={styles.heroSection}>
+            <div className={styles.heroContainer}>
+              <div className={styles.heroText}>
+                <span className={styles.heroLabel}>THE AUTUMN DROP</span>
+                <h1 className={`${styles.heroTitle} font-editorial`}>
+                  <Link href={`/merch/${featuredProduct.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {featuredProduct.name}
+                  </Link>
+                </h1>
+                <p className={`${styles.heroDescription} text-body-lg`}>
+                  {featuredProduct.description || "Designed for grounding in the shifting seasons. A tactile artifact for the conscious mover."}
+                </p>
+                <div className={styles.heroActions}>
+                  <Link href={`/merch/${featuredProduct.id}`} className="btn btn-primary">
+                    View Details
+                  </Link>
+                  <Link href={`/checkout/preorder?item=${featuredProduct.id}`} className="btn btn-secondary">
+                    Preorder Now
+                  </Link>
+                </div>
+              </div>
+
+              <div className={styles.heroImageArea}>
+                <div className={styles.wingMask}>
+                  <Link href={`/merch/${featuredProduct.id}`}>
+                    <img
+                      className={styles.heroImage}
+                      src={featuredProduct.image}
+                      alt={featuredProduct.name}
+                    />
+                  </Link>
+                </div>
+
+                <div className={styles.waxSeal}>
+                  <span className={styles.sealLabel}>{featuredProduct.color}</span>
+                  <span className={styles.sealPrice}>
+                    {featuredProduct.currencySymbol}
+                    {parseInt(featuredProduct.price)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className={styles.heroSection} style={{ textAlign: "center", padding: "100px 20px" }}>
+            <div className="container" style={{ maxWidth: "680px", margin: "0 auto" }}>
+              <span className={styles.heroLabel}>UPCOMING DROP</span>
+              <h1 className={`${styles.heroTitle} font-editorial`}>The Next Artifact</h1>
+              <p className="text-body-lg" style={{ color: "rgba(60, 42, 33, 0.75)", margin: "16px 0 28px" }}>
+                Our studio is preparing the next limited collection drop. Each artifact is crafted in limited numbers from sustainable materials.
               </p>
-              <div className={styles.heroActions}>
-                <Link href={`/merch/${featuredProduct.id}`} className="btn btn-primary">
-                  View Details
-                </Link>
-                <Link href={`/checkout/preorder?item=${featuredProduct.id}`} className="btn btn-secondary">
-                  Preorder Now
-                </Link>
-              </div>
+              <Link href="/partnership" className="btn btn-primary">
+                Support the Movement
+              </Link>
             </div>
-
-            <div className={styles.heroImageArea}>
-              <div className={styles.wingMask}>
-                <Link href={`/merch/${featuredProduct.id}`}>
-                  <img
-                    className={styles.heroImage}
-                    src='/merch/homepage-1.webp'
-                    alt="Ritual Hoodie"
-                  />
-                </Link>
-              </div>
-
-              <div className={styles.waxSeal}>
-                <span className={styles.sealLabel}>{featuredProduct.color}</span>
-                <span className={styles.sealPrice}>
-                  {featuredProduct.currencySymbol}
-                  {parseInt(featuredProduct.price)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Product Grid Section: Preorder */}
         <section className={styles.productsSection}>
@@ -105,62 +120,71 @@ export default async function MerchPage() {
               <div>
                 <h2 className="text-headline-lg font-editorial">Available to Preorder</h2>
                 <p className="text-body-md" style={{ color: "rgba(60, 42, 33, 0.65)" }}>
-                  Limited quantities available. Shipping Oct 24.
+                  {preorderProducts.length > 0
+                    ? "Limited quantities available. Orders ship according to each artifact's release schedule."
+                    : "New preorder artifacts will be announced shortly."}
                 </p>
               </div>
             </div>
 
-            <div className={styles.grid}>
-              {preorderProducts.map((product, idx) => (
-                <div key={product.id} className={`${styles.productCard} ${styles[`tier${idx + 1}`]}`}>
-                  <div className={`${styles.productImageArea} ${product.hoverImage ? styles.flippable : ''}`}>
-                    {product.hoverImage ? (
-                      <div className={styles.flipContainer}>
-                        <div className={styles.flipInner}>
-                          <div className={styles.flipFront}>
-                            <Link href={`/merch/${product.id}`}>
-                              <img className={styles.productImage} src={product.image} alt={product.name} />
-                            </Link>
-                          </div>
-                          <div className={styles.flipBack}>
-                            <Link href={`/merch/${product.id}`}>
-                              <img className={styles.productImage} src={product.hoverImage} alt={`${product.name} Alternate`} />
-                            </Link>
+            {preorderProducts.length > 0 ? (
+              <div className={styles.grid}>
+                {preorderProducts.map((product, idx) => (
+                  <div key={product.id} className={`${styles.productCard} ${styles[`tier${(idx % 4) + 1}`]}`}>
+                    <div className={`${styles.productImageArea} ${product.hoverImage && product.hoverImage !== product.image ? styles.flippable : ''}`}>
+                      {product.hoverImage && product.hoverImage !== product.image ? (
+                        <div className={styles.flipContainer}>
+                          <div className={styles.flipInner}>
+                            <div className={styles.flipFront}>
+                              <Link href={`/merch/${product.id}`}>
+                                <img className={styles.productImage} src={product.image} alt={product.name} />
+                              </Link>
+                            </div>
+                            <div className={styles.flipBack}>
+                              <Link href={`/merch/${product.id}`}>
+                                <img className={styles.productImage} src={product.hoverImage} alt={`${product.name} Alternate`} />
+                              </Link>
+                            </div>
                           </div>
                         </div>
+                      ) : (
+                        <Link href={`/merch/${product.id}`}>
+                          <img className={styles.productImage} src={product.image} alt={product.name} />
+                        </Link>
+                      )}
+                      <div className={`${styles.waxSeal} ${styles.smallSeal}`}>
+                        <span className={styles.sealPrice} style={{ fontSize: "16px" }}>
+                          {product.currencySymbol}
+                          {parseInt(product.price)}
+                        </span>
                       </div>
-                    ) : (
-                      <Link href={`/merch/${product.id}`}>
-                        <img className={styles.productImage} src={product.image} alt={product.name} />
+                    </div>
+                    <h3 className={`${styles.productCardTitle} font-editorial`}>
+                      <Link href={`/merch/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        {product.name}
                       </Link>
-                    )}
-                    <div className={`${styles.waxSeal} ${styles.smallSeal}`}>
-                      <span className={styles.sealPrice} style={{ fontSize: "16px" }}>
-                        {product.currencySymbol}
-                        {parseInt(product.price)}
-                      </span>
+                    </h3>
+                    <p className={styles.productCardMeta}>{product.shipping}</p>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                      <Link href={`/merch/${product.id}`} className="btn btn-secondary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        Details
+                      </Link>
+                      <Link href={`/checkout/preorder?item=${product.id}`} className="btn btn-primary" style={{ flex: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        Preorder
+                      </Link>
                     </div>
                   </div>
-                  <h3 className={`${styles.productCardTitle} font-editorial`}>
-                    <Link href={`/merch/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                      {product.name}
-                    </Link>
-                  </h3>
-                  <p className={styles.productCardMeta}>{product.shipping}</p>
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                    <Link href={`/merch/${product.id}`} className="btn btn-secondary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      Details
-                    </Link>
-                    <Link href={`/checkout/preorder?item=${product.id}`} className="btn btn-primary" style={{ flex: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      Preorder
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", padding: "60px 20px", background: "rgba(212, 196, 183, 0.15)", borderRadius: "var(--rounded-lg)" }}>
+                <p style={{ color: "var(--color-espresso)", fontSize: "15px", margin: 0 }}>
+                  No merchandise preorders are currently active. Join our Inner Circle below for priority drop notifications.
+                </p>
+              </div>
+            )}
           </div>
         </section>
-
 
         {/* Newsletter */}
         <section className={styles.newsletterSection}>

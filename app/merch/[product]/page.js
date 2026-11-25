@@ -6,6 +6,8 @@ import styles from "./page.module.css";
 
 const SITE_URL = "https://antidotemovement.global";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }) {
   const { product } = await params;
   const item = await getProductById(product);
